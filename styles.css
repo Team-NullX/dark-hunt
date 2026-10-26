@@ -126,16 +126,6 @@ button, input, select { font: inherit; color: inherit; }
   gap: 0.55rem;
 }
 
-.header-facts {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.1rem;
-  color: var(--quiet);
-  font-size: 0.92rem;
-}
-
 .theme-toggle {
   background: transparent;
   border: 1px solid var(--forest);
@@ -803,8 +793,7 @@ button, input, select { font: inherit; color: inherit; }
   .header-container,
   .case-open,
   .modal-grid { display: flex; flex-direction: column; align-items: flex-start; }
-  .header-metadata,
-  .header-facts { align-items: flex-start; }
+  .header-metadata { align-items: flex-start; }
   .studio-row { grid-template-columns: 1fr; }
   .stamp { transform: none; }
   .nav-btn { padding: 0.32rem 0.6rem; font-size: 0.92rem; }
