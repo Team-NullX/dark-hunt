@@ -19,29 +19,23 @@
   <link rel="stylesheet" href="report.css">
 </head>
 <body>
-  <!-- Header -->
-  <header class="app-header">
-    <div class="header-container">
-      <div class="header-brand">
-        <div>
+  <!-- Section bar -->
+  <nav class="app-nav" aria-label="Main Navigation">
+    <div class="nav-container">
+      <div class="nav-side">
+        <img class="nav-logo" src="tnx-logo.png" alt="Team NullX" width="64" height="64">
+        <button class="nav-btn active" data-view="overview" id="nav-btn-overview">Overview</button>
+        <button class="nav-btn" data-view="search" id="nav-btn-search">Claims</button>
+        <button class="nav-btn" data-view="evidence" id="nav-btn-evidence">Evidence</button>
+        <button class="nav-btn" data-view="briefing" id="nav-btn-briefing">Briefing</button>
+      </div>
+      <div class="nav-brand">
+        <div class="nav-brand-text">
           <h1 class="header-title">Dark Hunt</h1>
           <p class="header-subtitle">Team NullX. Public claims on Bangladesh’s key installations.</p>
         </div>
-      </div>
-      <div class="header-metadata">
         <button type="button" class="theme-toggle" id="theme-toggle" aria-pressed="false">Light theme</button>
       </div>
-    </div>
-  </header>
-
-  <!-- Global Navigation -->
-  <nav class="app-nav" aria-label="Main Navigation">
-    <div class="nav-container">
-      <img class="nav-logo" src="tnx-logo.png" alt="Team NullX" width="64" height="64">
-      <button class="nav-btn active" data-view="overview" id="nav-btn-overview">Overview</button>
-      <button class="nav-btn" data-view="search" id="nav-btn-search">Claims</button>
-      <button class="nav-btn" data-view="evidence" id="nav-btn-evidence">Evidence</button>
-      <button class="nav-btn" data-view="briefing" id="nav-btn-briefing">Briefing</button>
     </div>
   </nav>
 
