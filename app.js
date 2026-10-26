@@ -694,26 +694,32 @@
     `;
     briefingRecommendations.innerHTML = recHtml;
 
-    // 5. Evidence hashes
+    // 5. Evidence hashes & integrity register
     let evHtml = `
-      <table class="dossier-table">
+      <table class="dossier-table" style="table-layout: fixed; width: 100%;">
         <thead>
           <tr>
-            <th>Evidence ID</th>
-            <th>Originating Research Document</th>
-            <th>Artifact SHA-256 Digest</th>
-            <th>Verification Status</th>
+            <th style="width: 14%;">Evidence ID</th>
+            <th style="width: 32%;">Originating Research Document</th>
+            <th style="width: 34%;">Artifact SHA-256 Digest</th>
+            <th style="width: 20%; text-align: center;">Verification Status</th>
           </tr>
         </thead>
         <tbody>
     `;
-    DATA.evidence.slice(0, 20).forEach(e => {
+    DATA.evidence.forEach(e => {
       evHtml += `
         <tr>
           <td><strong>${escapeHtml(e.evidence_id)}</strong></td>
-          <td>${escapeHtml(e.originating_document)}</td>
-          <td style="font-family: monospace; font-size: 0.75rem;">${escapeHtml(e.sha256)}</td>
-          <td>${escapeHtml(e.verification_status)}</td>
+          <td style="word-break: break-word; font-size: 0.78rem;">${escapeHtml(e.originating_document)}</td>
+          <td style="font-family: monospace; font-size: 0.70rem; word-break: break-all; color: #1e3a8a; background: #f8fafc; padding: 4px 6px; border-radius: 3px;">
+            ${escapeHtml(e.sha256)}
+          </td>
+          <td style="text-align: center; vertical-align: middle;">
+            <span class="badge ${getVerifBadgeClass(e.verification_status)}" style="display: inline-block; white-space: nowrap; font-size: 0.72rem; padding: 3px 8px;">
+              ${escapeHtml(e.verification_status)}
+            </span>
+          </td>
         </tr>
       `;
     });
