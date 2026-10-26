@@ -45,7 +45,7 @@
     claimSortCol: 'claim_id',
     claimSortAsc: true,
     claimPage: 1,
-    claimPageSize: 25,
+    claimPageSize: 'ALL',
 
     sourceSearch: '',
     evidenceSearch: '',
@@ -301,15 +301,9 @@
       return 0;
     });
 
-    // Pagination
+    // Render all records at once (no pagination split)
     const total = filtered.length;
-    let pageSize = state.claimPageSize === 'ALL' ? total : parseInt(state.claimPageSize, 10);
-    if (!pageSize || pageSize < 1) pageSize = total || 1;
-    const totalPages = Math.ceil(total / pageSize) || 1;
-    if (state.claimPage > totalPages) state.claimPage = 1;
-
-    const startIdx = (state.claimPage - 1) * pageSize;
-    const pageRecords = filtered.slice(startIdx, startIdx + pageSize);
+    const pageRecords = filtered;
 
     claimsTableBody.innerHTML = '';
     if (pageRecords.length === 0) {
@@ -327,29 +321,20 @@
           <td>${escapeHtml(c.source_name)}</td>
           <td class="onion-cell"><span class="badge ${onion.badge}">${escapeHtml(onion.label)}</span>${onion.host ? `<span class="onion-host">${escapeHtml(onion.host)}</span>` : ''}</td>
           <td class="mono-cell">${escapeHtml(c.source_date)}</td>
-          <td class="mono-cell" style="font-size: 0.75rem;">${escapeHtml(c.evidence_ref)}</td>
-          <td style="max-width: 280px; font-size: 0.78rem;">${escapeHtml(c.summary_redacted.slice(0, 110))}...</td>
+          <td class="mono-cell" style="font-size: 0.72rem;">${escapeHtml(c.evidence_ref)}</td>
+          <td style="font-size: 0.76rem; line-height: 1.35;">${escapeHtml(c.summary_redacted.slice(0, 100))}...</td>
           <td><button class="btn btn-secondary btn-sm" data-claim-id="${escapeHtml(c.claim_id)}">View</button></td>
         `;
         claimsTableBody.appendChild(tr);
       });
     }
 
-    claimsTableCount.textContent = `Showing ${Math.min(startIdx + 1, total)} to ${Math.min(startIdx + pageRecords.length, total)} of ${total} records`;
+    claimsTableCount.textContent = `Showing all ${total} records`;
 
-    // Render pagination buttons
-    paginationButtons.innerHTML = '';
-    if (totalPages > 1) {
-      for (let p = 1; p <= totalPages; p++) {
-        const btn = document.createElement('button');
-        btn.className = `btn btn-secondary btn-sm ${p === state.claimPage ? 'btn-primary' : ''}`;
-        btn.textContent = p;
-        btn.addEventListener('click', () => {
-          state.claimPage = p;
-          renderClaimsTable();
-        });
-        paginationButtons.appendChild(btn);
-      }
+    // Render pagination buttons (removed: all records displayed in one view)
+    if (paginationButtons) {
+      paginationButtons.innerHTML = '';
+      paginationButtons.style.display = 'none';
     }
   }
 
@@ -1063,11 +1048,13 @@
     renderClaimsTable();
   });
 
-  claimPageSize.addEventListener('change', (e) => {
-    state.claimPageSize = e.target.value;
-    state.claimPage = 1;
-    renderClaimsTable();
-  });
+  if (claimPageSize) {
+    claimPageSize.addEventListener('change', (e) => {
+      state.claimPageSize = e.target.value;
+      state.claimPage = 1;
+      renderClaimsTable();
+    });
+  }
 
   claimResetAllBtn.addEventListener('click', () => {
     claimSearchInput.value = '';
@@ -1075,14 +1062,16 @@
     claimFilterThreat.value = 'ALL';
     claimFilterVerif.value = 'ALL';
     claimFilterCategory.value = 'ALL';
-    claimPageSize.value = '25';
+    if (claimPageSize) {
+      claimPageSize.value = 'ALL';
+    }
 
     state.claimSearch = '';
     state.claimSector = 'ALL';
     state.claimThreat = 'ALL';
     state.claimVerif = 'ALL';
     state.claimCategory = 'ALL';
-    state.claimPageSize = '25';
+    state.claimPageSize = 'ALL';
     state.claimPage = 1;
 
     renderClaimsTable();
