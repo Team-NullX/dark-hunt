@@ -10,11 +10,13 @@
   color: #111827;
   padding: 2.5rem;
   border-radius: 6px;
-  max-width: 1000px;
+  max-width: 1040px;
   margin: 1.5rem auto;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
   font-family: "Roboto", sans-serif;
   line-height: 1.6;
+  box-sizing: border-box;
+  overflow-x: auto;
 }
 
 .dossier-header {
@@ -104,6 +106,7 @@
   font-size: 0.8rem;
   margin-top: 0.5rem;
   margin-bottom: 1rem;
+  table-layout: fixed;
 }
 
 .dossier-table th {
@@ -113,6 +116,8 @@
   border: 1px solid #cbd5e1;
   padding: 0.5rem 0.6rem;
   text-align: left;
+  box-sizing: border-box;
+  word-break: break-word;
 }
 
 .dossier-table td {
@@ -120,22 +125,22 @@
   padding: 0.45rem 0.6rem;
   color: #1e293b;
   vertical-align: top;
+  box-sizing: border-box;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .dossier-table tr:nth-child(even) {
   background-color: #f8fafc;
+}
+
 .onion-badge {
-  display: inline-block;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.72rem;
-  background-color: #fef2f2;
-  color: #991b1b;
-  border: 1px solid #fecaca;
-  padding: 2px 6px;
-  border-radius: 4px;
+  display: block;
+  font-size: 0.78rem;
+  color: #102028;
   word-break: break-all;
-  margin-top: 4px;
-  line-height: 1.3;
+  margin-top: 0.2rem;
+  line-height: 1.35;
 }
 
 .source-sub-url {
@@ -144,6 +149,41 @@
   color: #475569;
   word-break: break-all;
   margin-top: 3px;
+}
+
+/* Badge styling inside print dossier */
+.print-dossier .badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 4px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.print-dossier .badge-verified {
+  background-color: #ecfdf5 !important;
+  color: #047857 !important;
+  border: 1px solid #a7f3d0 !important;
+}
+
+.print-dossier .badge-corroborated {
+  background-color: #eff6ff !important;
+  color: #1d4ed8 !important;
+  border: 1px solid #bfdbfe !important;
+}
+
+.print-dossier .badge-unverified {
+  background-color: #fffbeb !important;
+  color: #b45309 !important;
+  border: 1px solid #fde68a !important;
+}
+
+.print-dossier .badge-unassessed {
+  background-color: #f1f5f9 !important;
+  color: #475569 !important;
+  border: 1px solid #cbd5e1 !important;
 }
 
 .dossier-footer {
@@ -172,7 +212,7 @@
   /* Hide interactive chrome */
   .app-header,
   .app-nav,
-  .legal-banner,
+  .legal-text,
   .no-print,
   .filter-bar,
   .search-panel,

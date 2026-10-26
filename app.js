@@ -515,7 +515,7 @@
     DATA.kpis.forEach(k => {
       const hasOnion = onionKpiIds.has(k.kpi_id);
       const onionIndicator = hasOnion
-        ? `<span class="onion-badge" style="margin-left: 5px; font-size: 0.68rem; padding: 1px 5px;" title="Contains documented Dark Web .onion leak claim">🧅 .onion</span>`
+        ? `<span class="onion-badge" title="Documented onion address">.onion</span>`
         : '';
 
       kpiHtml += `
@@ -555,7 +555,7 @@
       let sourceDisplay = `<div><strong>${escapeHtml(c.source_name)}</strong></div>`;
       if (c.source_url_or_ref) {
         if (c.source_url_or_ref.includes('.onion')) {
-          sourceDisplay += `<div class="onion-badge">🧅 ${escapeHtml(c.source_url_or_ref)}</div>`;
+          sourceDisplay += `<div class="onion-badge">${escapeHtml(c.source_url_or_ref)}</div>`;
         } else if (c.source_url_or_ref.startsWith('http')) {
           sourceDisplay += `<div class="source-sub-url">${escapeHtml(c.source_url_or_ref)}</div>`;
         }
@@ -611,7 +611,7 @@
             </td>
             <td><span class="badge ${getThreatBadgeClass(c.threat_level)}">${escapeHtml(c.threat_level)}</span></td>
             <td>
-              <div class="onion-badge" style="font-weight: 600;">🧅 ${escapeHtml(c.source_url_or_ref)}</div>
+              <div class="onion-badge">${escapeHtml(c.source_url_or_ref)}</div>
               <div style="font-size: 0.72rem; color: #475569; margin-top: 3px;"><em>Source: ${escapeHtml(c.source_name)}</em></div>
               <div style="font-size: 0.74rem; color: #334155; margin-top: 4px;">${escapeHtml(c.summary_redacted)}</div>
             </td>
@@ -653,7 +653,7 @@
             <td><strong>${escapeHtml(s.source_id)}</strong></td>
             <td><strong>${escapeHtml(s.source_name)}</strong></td>
             <td>${escapeHtml(s.category)}</td>
-            <td><span class="onion-badge">🧅 ${escapeHtml(s.url_or_ref)}</span></td>
+            <td><span class="onion-badge">${escapeHtml(s.url_or_ref)}</span></td>
             <td><span class="badge ${getVerifBadgeClass(s.verification_status)}">${escapeHtml(s.verification_status)}</span></td>
           </tr>
         `;
@@ -694,26 +694,32 @@
     `;
     briefingRecommendations.innerHTML = recHtml;
 
-    // 5. Evidence hashes
+    // 5. Evidence hashes & integrity register
     let evHtml = `
-      <table class="dossier-table">
+      <table class="dossier-table" style="table-layout: fixed; width: 100%;">
         <thead>
           <tr>
-            <th>Evidence ID</th>
-            <th>Originating Research Document</th>
-            <th>Artifact SHA-256 Digest</th>
-            <th>Verification Status</th>
+            <th style="width: 14%;">Evidence ID</th>
+            <th style="width: 32%;">Originating Research Document</th>
+            <th style="width: 34%;">Artifact SHA-256 Digest</th>
+            <th style="width: 20%; text-align: center;">Verification Status</th>
           </tr>
         </thead>
         <tbody>
     `;
-    DATA.evidence.slice(0, 20).forEach(e => {
+    DATA.evidence.forEach(e => {
       evHtml += `
         <tr>
           <td><strong>${escapeHtml(e.evidence_id)}</strong></td>
-          <td>${escapeHtml(e.originating_document)}</td>
-          <td style="font-family: monospace; font-size: 0.75rem;">${escapeHtml(e.sha256)}</td>
-          <td>${escapeHtml(e.verification_status)}</td>
+          <td style="word-break: break-word; font-size: 0.78rem;">${escapeHtml(e.originating_document)}</td>
+          <td style="font-family: monospace; font-size: 0.70rem; word-break: break-all; color: #1e3a8a; background: #f8fafc; padding: 4px 6px; border-radius: 3px;">
+            ${escapeHtml(e.sha256)}
+          </td>
+          <td style="text-align: center; vertical-align: middle;">
+            <span class="badge ${getVerifBadgeClass(e.verification_status)}" style="display: inline-block; white-space: nowrap; font-size: 0.72rem; padding: 3px 8px;">
+              ${escapeHtml(e.verification_status)}
+            </span>
+          </td>
         </tr>
       `;
     });
