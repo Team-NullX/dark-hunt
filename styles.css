@@ -126,6 +126,16 @@ button, input, select { font: inherit; color: inherit; }
   gap: 0.55rem;
 }
 
+.nav-logo {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  background: #163e31;
+  border-radius: 10px;
+  flex-shrink: 0;
+  margin-right: 0.75rem;
+}
+
 .theme-toggle {
   background: transparent;
   border: 1px solid var(--forest);
