@@ -74,21 +74,14 @@ button, input, select { font: inherit; color: inherit; }
 .nav-container {
   width: min(100% - 3rem, 1720px);
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  grid-template-areas:
-    "logo title"
-    "links title";
+  display: flex;
   align-items: center;
-  column-gap: 1.25rem;
-  row-gap: 0.4rem;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
   padding: 0.55rem clamp(1rem, 3vw, 2rem);
 }
 
-.nav-logo { grid-area: logo; justify-self: start; }
-
 .nav-side {
-  grid-area: links;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -96,12 +89,15 @@ button, input, select { font: inherit; color: inherit; }
   min-width: 0;
 }
 
-.nav-brand-text {
-  grid-area: title;
-  justify-self: center;
-  text-align: center;
-  min-width: 0;
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-left: auto;
+  text-align: right;
 }
+
+.nav-brand-text { min-width: 0; }
 
 .header-title {
   margin: 0;
@@ -112,7 +108,7 @@ button, input, select { font: inherit; color: inherit; }
 }
 
 .header-subtitle {
-  margin: 0.12rem auto 0;
+  margin: 0.12rem 0 0;
   max-width: 26rem;
   color: var(--quiet);
   font-size: 0.95rem;
@@ -135,6 +131,7 @@ button, input, select { font: inherit; color: inherit; }
   background: #163e31;
   border-radius: 16px;
   flex-shrink: 0;
+  margin-right: 0.85rem;
 }
 
 .theme-toggle {
@@ -792,7 +789,9 @@ button, input, select { font: inherit; color: inherit; }
 
 @media (max-width: 800px) {
   .case-open,
-  .modal-grid { display: flex; flex-direction: column; align-items: flex-start; }
+  .modal-grid,
+  .nav-brand { display: flex; flex-direction: column; align-items: flex-start; }
+  .nav-brand { text-align: left; margin-left: 0; }
   .studio-row { grid-template-columns: 1fr; }
   .stamp { transform: none; }
   .nav-btn { padding: 0.32rem 0.6rem; font-size: 0.92rem; }
