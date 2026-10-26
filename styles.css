@@ -371,32 +371,65 @@ button, input, select { font: inherit; color: inherit; }
 
 .export-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
 
-.table-container { width: 100%; overflow-x: auto; }
+.table-container { width: 100%; overflow-x: hidden; }
 
 .data-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   line-height: 1.4;
+  table-layout: fixed;
 }
 
 .data-table th {
   text-align: left;
   font-weight: 600;
-  font-size: 0.92rem;
-  padding: 0.45rem 0.7rem 0.45rem 0;
+  font-size: 0.82rem;
+  padding: 0.45rem 0.4rem 0.45rem 0;
   border-bottom: 1px solid var(--ink);
   cursor: pointer;
-  white-space: nowrap;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.25;
 }
 
 .data-table td {
-  padding: 0.7rem 0.7rem 0.7rem 0;
+  padding: 0.55rem 0.4rem 0.55rem 0;
   border-bottom: 1px solid var(--rule);
   vertical-align: top;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .data-table tbody tr:hover { background: color-mix(in srgb, var(--sheet) 70%, transparent); }
+
+#claims-table {
+  width: 100%;
+  table-layout: fixed;
+  font-size: 0.8rem;
+}
+
+#claims-table th {
+  font-size: 0.78rem;
+  padding: 0.45rem 0.35rem;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.25;
+}
+
+#claims-table td {
+  padding: 0.45rem 0.35rem;
+  font-size: 0.78rem;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+#claims-table .btn-sm {
+  padding: 0.15rem 0.35rem;
+  font-size: 0.75rem;
+  width: 100%;
+  text-align: center;
+}
 
 .table-footer,
 .pagination-bar {
@@ -409,7 +442,7 @@ button, input, select { font: inherit; color: inherit; }
   font-size: 0.95rem;
 }
 
-.pagination-buttons { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+.pagination-buttons { display: none; }
 
 .badge {
   display: inline;
@@ -432,14 +465,15 @@ button, input, select { font: inherit; color: inherit; }
 
 .mono-cell { font-variant-numeric: tabular-nums; }
 
-.onion-cell { display: flex; flex-direction: column; gap: 0.15rem; max-width: 16rem; }
+.onion-cell { display: flex; flex-direction: column; gap: 0.15rem; width: 100%; max-width: 100%; overflow-wrap: anywhere; word-break: break-all; }
 
 .onion-host,
 .sha-text {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   line-height: 1.35;
   word-break: break-all;
+  overflow-wrap: anywhere;
   color: var(--quiet);
 }
 

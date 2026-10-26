@@ -101,15 +101,15 @@
         <table class="data-table" id="kpi-table">
           <thead>
             <tr>
-              <th data-sort="kpi_id">KPI ID</th>
-              <th data-sort="kpi_name">Installation / Entity Name</th>
-              <th data-sort="sector">Sector</th>
-              <th data-sort="criticality">Criticality</th>
-              <th data-sort="claim_count">Claims Count</th>
-              <th data-sort="highest_threat">Highest Threat Level</th>
-              <th data-sort="verification_status">Verification Status</th>
-              <th data-sort="latest_source_date">Latest Recorded Date</th>
-              <th>Action</th>
+              <th data-sort="kpi_id" style="width: 8%;">KPI ID</th>
+              <th data-sort="kpi_name" style="width: 22%;">Installation / Entity Name</th>
+              <th data-sort="sector" style="width: 14%;">Sector</th>
+              <th data-sort="criticality" style="width: 10%;">Criticality</th>
+              <th data-sort="claim_count" style="width: 8%;">Claims Count</th>
+              <th data-sort="highest_threat" style="width: 12%;">Highest Threat Level</th>
+              <th data-sort="verification_status" style="width: 12%;">Verification Status</th>
+              <th data-sort="latest_source_date" style="width: 8%;">Latest Recorded Date</th>
+              <th style="width: 6%;">Action</th>
             </tr>
           </thead>
           <tbody id="kpi-table-body">
@@ -181,15 +181,6 @@
               <option value="API">API Exposure</option>
             </select>
           </div>
-          <div class="filter-item">
-            <label for="claim-page-size">Page Size:</label>
-            <select id="claim-page-size" class="select-input">
-              <option value="15">15 per page</option>
-              <option value="25" selected>25 per page</option>
-              <option value="50">50 per page</option>
-              <option value="ALL">All Records</option>
-            </select>
-          </div>
         </div>
       </div>
 
@@ -198,17 +189,17 @@
         <table class="data-table" id="claims-table">
           <thead>
             <tr>
-              <th data-sort="claim_id">Claim ID</th>
-              <th data-sort="kpi_name">Target Entity / KPI</th>
-              <th data-sort="sector">Sector</th>
-              <th data-sort="threat_level">Threat Level</th>
-              <th data-sort="verification_status">Verification</th>
-              <th data-sort="source_name">Platform / Source</th>
-              <th data-sort="onion_link_verified">Onion link verified</th>
-              <th data-sort="source_date">Incident Date</th>
-              <th>Evidence Reference</th>
-              <th>Summary (Redacted)</th>
-              <th>Action</th>
+              <th data-sort="claim_id" style="width: 6%;">Claim ID</th>
+              <th data-sort="kpi_name" style="width: 14%;">Target Entity / KPI</th>
+              <th data-sort="sector" style="width: 9%;">Sector</th>
+              <th data-sort="threat_level" style="width: 7%;">Threat Level</th>
+              <th data-sort="verification_status" style="width: 8%;">Verification</th>
+              <th data-sort="source_name" style="width: 11%;">Platform / Source</th>
+              <th data-sort="onion_link_verified" style="width: 13%;">Onion link verified</th>
+              <th data-sort="source_date" style="width: 7%;">Incident Date</th>
+              <th style="width: 7%;">Evidence Ref</th>
+              <th style="width: 13%;">Summary (Redacted)</th>
+              <th style="width: 5%;">Action</th>
             </tr>
           </thead>
           <tbody id="claims-table-body">
@@ -217,12 +208,10 @@
         </table>
       </div>
 
-      <!-- Pagination Controls -->
+      <!-- Total Count Bar (Pagination Removed: All Records Rendered At Once) -->
       <div class="pagination-bar">
         <span id="claims-table-count">Showing 0 of 0 records</span>
-        <div class="pagination-buttons" id="pagination-buttons">
-          <!-- Buttons rendered dynamically -->
-        </div>
+        <div class="pagination-buttons" id="pagination-buttons" style="display: none;"></div>
       </div>
     </section>
 
@@ -242,13 +231,13 @@
         <table class="data-table" id="sources-table">
           <thead>
             <tr>
-              <th>Source ID</th>
-              <th>Source Name / Label</th>
-              <th>Category</th>
-              <th>Passive URL / Reference</th>
-              <th>Network Type</th>
-              <th>Verification Assessment</th>
-              <th>Analytical Notes</th>
+              <th style="width: 10%;">Source ID</th>
+              <th style="width: 20%;">Source Name / Label</th>
+              <th style="width: 12%;">Category</th>
+              <th style="width: 22%;">Passive URL / Reference</th>
+              <th style="width: 12%;">Network Type</th>
+              <th style="width: 12%;">Verification Assessment</th>
+              <th style="width: 12%;">Analytical Notes</th>
             </tr>
           </thead>
           <tbody id="sources-table-body">
@@ -274,15 +263,15 @@
         <table class="data-table" id="evidence-table">
           <thead>
             <tr>
-              <th>Evidence ID</th>
-              <th>Screenshot Artifact</th>
-              <th>Originating Research Document</th>
-              <th>SHA-256 Digest</th>
-              <th>Dimensions</th>
-              <th>Size</th>
-              <th>Verification Status</th>
-              <th>OCR Preview (Redacted)</th>
-              <th>Action</th>
+              <th style="width: 8%;">Evidence ID</th>
+              <th style="width: 10%;">Screenshot Artifact</th>
+              <th style="width: 18%;">Originating Research Document</th>
+              <th style="width: 14%;">SHA-256 Digest</th>
+              <th style="width: 8%;">Dimensions</th>
+              <th style="width: 6%;">Size</th>
+              <th style="width: 12%;">Verification Status</th>
+              <th style="width: 18%;">OCR Preview (Redacted)</th>
+              <th style="width: 6%;">Action</th>
             </tr>
           </thead>
           <tbody id="evidence-table-body">
@@ -357,12 +346,12 @@
         <table class="data-table" id="response-table">
           <thead>
             <tr>
-              <th>Target Entity / KPI</th>
-              <th>Sector</th>
-              <th>Threat Level</th>
-              <th>Suggested Owner</th>
-              <th>Recommended Defensive Protocol</th>
-              <th>Verification Status</th>
+              <th style="width: 20%;">Target Entity / KPI</th>
+              <th style="width: 15%;">Sector</th>
+              <th style="width: 12%;">Threat Level</th>
+              <th style="width: 15%;">Suggested Owner</th>
+              <th style="width: 26%;">Recommended Defensive Protocol</th>
+              <th style="width: 12%;">Verification Status</th>
             </tr>
           </thead>
           <tbody id="response-table-body">

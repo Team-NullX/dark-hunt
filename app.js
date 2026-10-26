@@ -45,7 +45,7 @@
     claimSortCol: 'claim_id',
     claimSortAsc: true,
     claimPage: 1,
-    claimPageSize: 25,
+    claimPageSize: 'ALL',
 
     sourceSearch: '',
     evidenceSearch: '',
@@ -301,15 +301,9 @@
       return 0;
     });
 
-    // Pagination
+    // Render all records at once (no pagination split)
     const total = filtered.length;
-    let pageSize = state.claimPageSize === 'ALL' ? total : parseInt(state.claimPageSize, 10);
-    if (!pageSize || pageSize < 1) pageSize = total || 1;
-    const totalPages = Math.ceil(total / pageSize) || 1;
-    if (state.claimPage > totalPages) state.claimPage = 1;
-
-    const startIdx = (state.claimPage - 1) * pageSize;
-    const pageRecords = filtered.slice(startIdx, startIdx + pageSize);
+    const pageRecords = filtered;
 
     claimsTableBody.innerHTML = '';
     if (pageRecords.length === 0) {
@@ -327,29 +321,20 @@
           <td>${escapeHtml(c.source_name)}</td>
           <td class="onion-cell"><span class="badge ${onion.badge}">${escapeHtml(onion.label)}</span>${onion.host ? `<span class="onion-host">${escapeHtml(onion.host)}</span>` : ''}</td>
           <td class="mono-cell">${escapeHtml(c.source_date)}</td>
-          <td class="mono-cell" style="font-size: 0.75rem;">${escapeHtml(c.evidence_ref)}</td>
-          <td style="max-width: 280px; font-size: 0.78rem;">${escapeHtml(c.summary_redacted.slice(0, 110))}...</td>
+          <td class="mono-cell" style="font-size: 0.72rem;">${escapeHtml(c.evidence_ref)}</td>
+          <td style="font-size: 0.76rem; line-height: 1.35;">${escapeHtml(c.summary_redacted.slice(0, 100))}...</td>
           <td><button class="btn btn-secondary btn-sm" data-claim-id="${escapeHtml(c.claim_id)}">View</button></td>
         `;
         claimsTableBody.appendChild(tr);
       });
     }
 
-    claimsTableCount.textContent = `Showing ${Math.min(startIdx + 1, total)} to ${Math.min(startIdx + pageRecords.length, total)} of ${total} records`;
+    claimsTableCount.textContent = `Showing all ${total} records`;
 
-    // Render pagination buttons
-    paginationButtons.innerHTML = '';
-    if (totalPages > 1) {
-      for (let p = 1; p <= totalPages; p++) {
-        const btn = document.createElement('button');
-        btn.className = `btn btn-secondary btn-sm ${p === state.claimPage ? 'btn-primary' : ''}`;
-        btn.textContent = p;
-        btn.addEventListener('click', () => {
-          state.claimPage = p;
-          renderClaimsTable();
-        });
-        paginationButtons.appendChild(btn);
-      }
+    // Render pagination buttons (removed: all records displayed in one view)
+    if (paginationButtons) {
+      paginationButtons.innerHTML = '';
+      paginationButtons.style.display = 'none';
     }
   }
 
@@ -499,18 +484,19 @@
 
     // 1. KPI summary table
     let kpiHtml = `
-      <table class="dossier-table">
-        <thead>
-          <tr>
-            <th>KPI ID</th>
-            <th>Designated Installation / Entity</th>
-            <th>Sector</th>
-            <th>Documented Claims</th>
-            <th>Threat Assessment</th>
-            <th>Verification Status</th>
-          </tr>
-        </thead>
-        <tbody>
+      <div class="dossier-table-container">
+        <table class="dossier-table" style="table-layout: fixed; width: 100%;">
+          <thead>
+            <tr>
+              <th style="width: 11%;">KPI ID</th>
+              <th style="width: 27%;">Designated Installation / Entity</th>
+              <th style="width: 17%;">Sector</th>
+              <th style="width: 17%;">Documented Claims</th>
+              <th style="width: 12%; text-align: center;">Threat Level</th>
+              <th style="width: 16%; text-align: center;">Verification Status</th>
+            </tr>
+          </thead>
+          <tbody>
     `;
     DATA.kpis.forEach(k => {
       const hasOnion = onionKpiIds.has(k.kpi_id);
@@ -521,35 +507,42 @@
       kpiHtml += `
         <tr>
           <td><strong>${escapeHtml(k.kpi_id)}</strong></td>
-          <td>${escapeHtml(k.kpi_name)}</td>
+          <td style="font-weight: 600;">${escapeHtml(k.kpi_name)}</td>
           <td>${escapeHtml(k.sector)}</td>
           <td>
             ${k.claim_count > 0 ? k.claim_count + ' incident(s)' : 'No claims located'}
             ${onionIndicator}
           </td>
-          <td><span class="badge ${getThreatBadgeClass(k.highest_threat)}">${escapeHtml(k.highest_threat)}</span></td>
-          <td>${escapeHtml(k.verification_status)}</td>
+          <td style="text-align: center; vertical-align: middle;">
+            <span class="badge ${getThreatBadgeClass(k.highest_threat)}">${escapeHtml(k.highest_threat)}</span>
+          </td>
+          <td style="text-align: center; vertical-align: middle;">
+            <span class="badge ${getVerifBadgeClass(k.verification_status)}">
+              ${escapeHtml(k.verification_status)}
+            </span>
+          </td>
         </tr>
       `;
     });
-    kpiHtml += `</tbody></table>`;
+    kpiHtml += `</tbody></table></div>`;
     briefingKpiSummary.innerHTML = kpiHtml;
 
     // 2. Major incidents (Critical / High threat) with available Source / .onion URLs
     const majorClaims = DATA.inventory.filter(c => c.threat_level === 'Critical' || c.threat_level === 'High').slice(0, 15);
     let majHtml = `
-      <table class="dossier-table">
-        <thead>
-          <tr>
-            <th style="width: 10%;">Claim ID</th>
-            <th style="width: 18%;">Target Entity</th>
-            <th style="width: 10%;">Threat Level</th>
-            <th style="width: 30%;">Platform / Leak Source &amp; URL</th>
-            <th style="width: 12%;">Incident Date</th>
-            <th style="width: 20%;">Verified Summary</th>
-          </tr>
-        </thead>
-        <tbody>
+      <div class="dossier-table-container">
+        <table class="dossier-table" style="table-layout: fixed; width: 100%;">
+          <thead>
+            <tr>
+              <th style="width: 9%;">Claim ID</th>
+              <th style="width: 18%;">Target Entity</th>
+              <th style="width: 10%; text-align: center;">Threat Level</th>
+              <th style="width: 31%;">Platform / Leak Source &amp; URL</th>
+              <th style="width: 11%; text-align: center;">Incident Date</th>
+              <th style="width: 21%;">Verified Summary</th>
+            </tr>
+          </thead>
+          <tbody>
     `;
     majorClaims.forEach(c => {
       let sourceDisplay = `<div><strong>${escapeHtml(c.source_name)}</strong></div>`;
@@ -565,14 +558,16 @@
         <tr>
           <td><strong>${escapeHtml(c.claim_id)}</strong></td>
           <td><strong>${escapeHtml(c.kpi_name)}</strong></td>
-          <td><span class="badge ${getThreatBadgeClass(c.threat_level)}">${escapeHtml(c.threat_level)}</span></td>
+          <td style="text-align: center; vertical-align: middle;">
+            <span class="badge ${getThreatBadgeClass(c.threat_level)}">${escapeHtml(c.threat_level)}</span>
+          </td>
           <td>${sourceDisplay}</td>
-          <td>${escapeHtml(c.source_date)}</td>
-          <td>${escapeHtml(c.summary_redacted)}</td>
+          <td style="text-align: center; font-family: monospace; font-size: 0.75rem;">${escapeHtml(c.source_date)}</td>
+          <td style="font-size: 0.76rem; line-height: 1.45;">${escapeHtml(c.summary_redacted)}</td>
         </tr>
       `;
     });
-    majHtml += `</tbody></table>`;
+    majHtml += `</tbody></table></div>`;
     briefingMajorIncidents.innerHTML = majHtml;
 
     // 3. Dedicated Dark Web (.onion) Threat Sources & Leak Portal Register
@@ -587,18 +582,19 @@
         <p style="font-size: 0.85rem; color: #475569; margin-bottom: 0.6rem;">
           Exposures identified on Tor hidden service ransomware blogs, breach forums, and extortion sites directly targeting Bangladeshi public and private infrastructure.
         </p>
-        <table class="dossier-table">
-          <thead>
-            <tr>
-              <th style="width: 9%;">Claim ID</th>
-              <th style="width: 17%;">Target Entity &amp; Sector</th>
-              <th style="width: 9%;">Threat Level</th>
-              <th style="width: 36%;">Dark Web (.onion) Link / Leak Portal</th>
-              <th style="width: 11%;">Incident Date</th>
-              <th style="width: 18%;">Evidence / Integrity</th>
-            </tr>
-          </thead>
-          <tbody>
+        <div class="dossier-table-container">
+          <table class="dossier-table" style="table-layout: fixed; width: 100%;">
+            <thead>
+              <tr>
+                <th style="width: 10%;">Claim ID</th>
+                <th style="width: 19%;">Target Entity &amp; Sector</th>
+                <th style="width: 11%; text-align: center;">Threat Level</th>
+                <th style="width: 32%;">Dark Web (.onion) Link / Leak Portal</th>
+                <th style="width: 12%; text-align: center;">Incident Date</th>
+                <th style="width: 16%; text-align: center;">Evidence Ref</th>
+              </tr>
+            </thead>
+            <tbody>
       `;
 
       onionClaims.forEach(c => {
@@ -609,14 +605,16 @@
               <strong>${escapeHtml(c.kpi_name)}</strong>
               <div style="font-size: 0.72rem; color: #64748b;">${escapeHtml(c.sector)}</div>
             </td>
-            <td><span class="badge ${getThreatBadgeClass(c.threat_level)}">${escapeHtml(c.threat_level)}</span></td>
+            <td style="text-align: center; vertical-align: middle;">
+              <span class="badge ${getThreatBadgeClass(c.threat_level)}">${escapeHtml(c.threat_level)}</span>
+            </td>
             <td>
               <div class="onion-badge">${escapeHtml(c.source_url_or_ref)}</div>
               <div style="font-size: 0.72rem; color: #475569; margin-top: 3px;"><em>Source: ${escapeHtml(c.source_name)}</em></div>
-              <div style="font-size: 0.74rem; color: #334155; margin-top: 4px;">${escapeHtml(c.summary_redacted)}</div>
+              <div style="font-size: 0.74rem; color: #334155; margin-top: 4px; line-height: 1.4;">${escapeHtml(c.summary_redacted)}</div>
             </td>
-            <td>${escapeHtml(c.source_date)}</td>
-            <td>
+            <td style="text-align: center; font-family: monospace; font-size: 0.75rem;">${escapeHtml(c.source_date)}</td>
+            <td style="text-align: center; vertical-align: middle;">
               <code>${escapeHtml(c.evidence_ref || 'EVD-REG')}</code>
               <div style="font-family: monospace; font-size: 0.68rem; color: #64748b; word-break: break-all; margin-top: 2px;">
                 ${escapeHtml(c.artefact_sha256 ? c.artefact_sha256.substring(0, 16) + '...' : 'Verified')}
@@ -625,7 +623,7 @@
           </tr>
         `;
       });
-      onionHtml += `</tbody></table>`;
+      onionHtml += `</tbody></table></div>`;
 
       onionHtml += `
         <h4 style="font-size: 0.95rem; font-weight: 700; color: #0f172a; margin-top: 1.5rem; margin-bottom: 0.5rem;">
@@ -634,17 +632,18 @@
         <p style="font-size: 0.85rem; color: #475569; margin-bottom: 0.6rem;">
           Public dark web directories and indexes audited passively for breach mentions, ransomware blogs, and paste sites.
         </p>
-        <table class="dossier-table">
-          <thead>
-            <tr>
-              <th style="width: 10%;">Source ID</th>
-              <th style="width: 20%;">Platform / Directory Name</th>
-              <th style="width: 16%;">Category</th>
-              <th style="width: 36%;">Tor Hidden Service (.onion) Address</th>
-              <th style="width: 18%;">Verification Status</th>
-            </tr>
-          </thead>
-          <tbody>
+        <div class="dossier-table-container">
+          <table class="dossier-table" style="table-layout: fixed; width: 100%;">
+            <thead>
+              <tr>
+                <th style="width: 11%;">Source ID</th>
+                <th style="width: 21%;">Platform / Directory Name</th>
+                <th style="width: 16%;">Category</th>
+                <th style="width: 32%;">Tor Hidden Service (.onion) Address</th>
+                <th style="width: 20%; text-align: center;">Verification Status</th>
+              </tr>
+            </thead>
+            <tbody>
       `;
 
       onionSources.forEach(s => {
@@ -654,58 +653,63 @@
             <td><strong>${escapeHtml(s.source_name)}</strong></td>
             <td>${escapeHtml(s.category)}</td>
             <td><span class="onion-badge">${escapeHtml(s.url_or_ref)}</span></td>
-            <td><span class="badge ${getVerifBadgeClass(s.verification_status)}">${escapeHtml(s.verification_status)}</span></td>
+            <td style="text-align: center; vertical-align: middle;">
+              <span class="badge ${getVerifBadgeClass(s.verification_status)}">${escapeHtml(s.verification_status)}</span>
+            </td>
           </tr>
         `;
       });
-      onionHtml += `</tbody></table>`;
+      onionHtml += `</tbody></table></div>`;
 
       briefingOnionRegister.innerHTML = onionHtml;
     }
 
     // 4. Strategic Recommendations
     let recHtml = `
-      <table class="dossier-table">
-        <thead>
-          <tr>
-            <th>Target Category</th>
-            <th>Designated Responder</th>
-            <th>Prescribed Defensive Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>Critical Infrastructure (KPI Enclaves)</strong></td>
-            <td><strong>CERT (BGD e-GOV CIRT)</strong></td>
-            <td>Immediate isolation of compromised Exchange/API integration gateways. Perform domain-wide password revocation, revoke inactive API tokens, enforce MFA on all administrative consoles.</td>
-          </tr>
-          <tr>
-            <td><strong>State Defense &amp; Law Enforcement</strong></td>
-            <td><strong>LEA &amp; National Security</strong></td>
-            <td>Active forensic review of exposed perimeter services. Threat hunting for RemotePE, Babuk, and Medusa implant indicators. Coordinate lawful evidence custody.</td>
-          </tr>
-          <tr>
-            <td><strong>Commercial Sector &amp; Supply Chain</strong></td>
-            <td><strong>Infrastructure Operators</strong></td>
-            <td>Notification to affected account holders regarding breached databases. Patch exposed Apache/Nginx web instances and deploy Web Application Firewalls (WAF).</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="dossier-table-container">
+        <table class="dossier-table" style="table-layout: fixed; width: 100%;">
+          <thead>
+            <tr>
+              <th style="width: 25%;">Target Category</th>
+              <th style="width: 22%;">Designated Responder</th>
+              <th style="width: 53%;">Prescribed Defensive Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Critical Infrastructure (KPI Enclaves)</strong></td>
+              <td><strong>CERT (BGD e-GOV CIRT)</strong></td>
+              <td>Immediate isolation of compromised Exchange/API integration gateways. Perform domain-wide password revocation, revoke inactive API tokens, enforce MFA on all administrative consoles.</td>
+            </tr>
+            <tr>
+              <td><strong>State Defense &amp; Law Enforcement</strong></td>
+              <td><strong>LEA &amp; National Security</strong></td>
+              <td>Active forensic review of exposed perimeter services. Threat hunting for RemotePE, Babuk, and Medusa implant indicators. Coordinate lawful evidence custody.</td>
+            </tr>
+            <tr>
+              <td><strong>Commercial Sector &amp; Supply Chain</strong></td>
+              <td><strong>Infrastructure Operators</strong></td>
+              <td>Notification to affected account holders regarding breached databases. Patch exposed Apache/Nginx web instances and deploy Web Application Firewalls (WAF).</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     `;
     briefingRecommendations.innerHTML = recHtml;
 
     // 5. Evidence hashes & integrity register
     let evHtml = `
-      <table class="dossier-table" style="table-layout: fixed; width: 100%;">
-        <thead>
-          <tr>
-            <th style="width: 14%;">Evidence ID</th>
-            <th style="width: 32%;">Originating Research Document</th>
-            <th style="width: 34%;">Artifact SHA-256 Digest</th>
-            <th style="width: 20%; text-align: center;">Verification Status</th>
-          </tr>
-        </thead>
-        <tbody>
+      <div class="dossier-table-container">
+        <table class="dossier-table" style="table-layout: fixed; width: 100%;">
+          <thead>
+            <tr>
+              <th style="width: 14%;">Evidence ID</th>
+              <th style="width: 32%;">Originating Research Document</th>
+              <th style="width: 34%;">Artifact SHA-256 Digest</th>
+              <th style="width: 20%; text-align: center;">Verification Status</th>
+            </tr>
+          </thead>
+          <tbody>
     `;
     DATA.evidence.forEach(e => {
       evHtml += `
@@ -716,14 +720,14 @@
             ${escapeHtml(e.sha256)}
           </td>
           <td style="text-align: center; vertical-align: middle;">
-            <span class="badge ${getVerifBadgeClass(e.verification_status)}" style="display: inline-block; white-space: nowrap; font-size: 0.72rem; padding: 3px 8px;">
+            <span class="badge ${getVerifBadgeClass(e.verification_status)}">
               ${escapeHtml(e.verification_status)}
             </span>
           </td>
         </tr>
       `;
     });
-    evHtml += `</tbody></table>`;
+    evHtml += `</tbody></table></div>`;
     briefingEvidenceList.innerHTML = evHtml;
   }
 
@@ -1044,11 +1048,13 @@
     renderClaimsTable();
   });
 
-  claimPageSize.addEventListener('change', (e) => {
-    state.claimPageSize = e.target.value;
-    state.claimPage = 1;
-    renderClaimsTable();
-  });
+  if (claimPageSize) {
+    claimPageSize.addEventListener('change', (e) => {
+      state.claimPageSize = e.target.value;
+      state.claimPage = 1;
+      renderClaimsTable();
+    });
+  }
 
   claimResetAllBtn.addEventListener('click', () => {
     claimSearchInput.value = '';
@@ -1056,14 +1062,16 @@
     claimFilterThreat.value = 'ALL';
     claimFilterVerif.value = 'ALL';
     claimFilterCategory.value = 'ALL';
-    claimPageSize.value = '25';
+    if (claimPageSize) {
+      claimPageSize.value = 'ALL';
+    }
 
     state.claimSearch = '';
     state.claimSector = 'ALL';
     state.claimThreat = 'ALL';
     state.claimVerif = 'ALL';
     state.claimCategory = 'ALL';
-    state.claimPageSize = '25';
+    state.claimPageSize = 'ALL';
     state.claimPage = 1;
 
     renderClaimsTable();

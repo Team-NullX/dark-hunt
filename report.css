@@ -4,16 +4,24 @@
    Team NullX
    ========================================================================== */
 
+/* Briefing Section Header Alignment with Dossier Card */
+#view-briefing .section-header {
+  max-width: 1040px;
+  margin: 0 auto 1.5rem auto;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 /* Screen preview of dossier */
 .print-dossier {
   background-color: #ffffff;
   color: #111827;
-  padding: 2.5rem;
-  border-radius: 6px;
+  padding: 3rem 2.5rem;
+  border-radius: 8px;
   max-width: 1040px;
-  margin: 1.5rem auto;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
-  font-family: "Roboto", sans-serif;
+  margin: 0 auto 3rem auto;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+  font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   line-height: 1.6;
   box-sizing: border-box;
   overflow-x: auto;
@@ -22,7 +30,7 @@
 .dossier-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   flex-wrap: wrap;
   gap: 1.5rem;
   margin-bottom: 1.5rem;
@@ -31,15 +39,17 @@
 .dossier-letterhead {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: 1.25rem;
+  flex: 1 1 360px;
 }
 
 .dossier-letterhead h1 {
-  font-size: 1.4rem;
+  font-size: 1.35rem;
   font-weight: 800;
   color: #0f172a;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
   margin-bottom: 0.2rem;
+  line-height: 1.2;
 }
 
 .dossier-letterhead h2 {
@@ -48,6 +58,7 @@
   color: #dc2626;
   letter-spacing: 0.02em;
   margin-bottom: 0.25rem;
+  line-height: 1.2;
 }
 
 .dossier-subhead {
@@ -59,13 +70,19 @@
   background-color: #f8fafc;
   border: 1px solid #cbd5e1;
   padding: 0.75rem 1rem;
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: 0.8rem;
+  flex: 0 1 380px;
+}
+
+.meta-box-table {
+  width: 100%;
 }
 
 .meta-box-table td {
   padding: 0.2rem 0.5rem;
   color: #334155;
+  vertical-align: middle;
 }
 
 .meta-box-table strong {
@@ -79,16 +96,16 @@
 }
 
 .dossier-chapter {
-  margin-bottom: 1.75rem;
+  margin-bottom: 2rem;
 }
 
 .dossier-chapter h3 {
   font-size: 1.1rem;
   font-weight: 700;
   color: #0f172a;
-  border-bottom: 1px solid #e2e8f0;
-  padding-bottom: 0.35rem;
-  margin-bottom: 0.75rem;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 0.4rem;
+  margin-bottom: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }
@@ -96,17 +113,30 @@
 .dossier-chapter p {
   font-size: 0.9rem;
   color: #334155;
-  margin-bottom: 0.75rem;
-  text-align: justify;
+  margin-bottom: 0.85rem;
+  text-align: left;
+  line-height: 1.65;
+}
+
+/* Table Container with Horizontal Scroll Isolation */
+.dossier-table-container {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  margin-top: 0.75rem;
+  margin-bottom: 1.25rem;
+  box-sizing: border-box;
+  -webkit-overflow-scrolling: touch;
 }
 
 .dossier-table {
   width: 100%;
+  max-width: 100%;
   border-collapse: collapse;
   font-size: 0.8rem;
-  margin-top: 0.5rem;
-  margin-bottom: 1rem;
+  margin: 0;
   table-layout: fixed;
+  box-sizing: border-box;
 }
 
 .dossier-table th {
@@ -114,20 +144,22 @@
   color: #0f172a;
   font-weight: 700;
   border: 1px solid #cbd5e1;
-  padding: 0.5rem 0.6rem;
+  padding: 0.55rem 0.65rem;
   text-align: left;
   box-sizing: border-box;
   word-break: break-word;
+  overflow-wrap: anywhere;
+  vertical-align: middle;
 }
 
 .dossier-table td {
   border: 1px solid #e2e8f0;
-  padding: 0.45rem 0.6rem;
+  padding: 0.5rem 0.65rem;
   color: #1e293b;
-  vertical-align: top;
+  vertical-align: middle;
   box-sizing: border-box;
   word-break: break-word;
-  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
 }
 
 .dossier-table tr:nth-child(even) {
@@ -136,10 +168,18 @@
 
 .onion-badge {
   display: block;
-  font-size: 0.78rem;
-  color: #102028;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.74rem;
+  background-color: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+  padding: 3px 6px;
+  border-radius: 4px;
   word-break: break-all;
-  margin-top: 0.2rem;
+  overflow-wrap: anywhere;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin-top: 0.25rem;
   line-height: 1.35;
 }
 
@@ -148,10 +188,12 @@
   font-size: 0.72rem;
   color: #475569;
   word-break: break-all;
+  overflow-wrap: anywhere;
+  max-width: 100%;
   margin-top: 3px;
 }
 
-/* Badge styling inside print dossier */
+/* Badge styling inside print dossier - never overflow cell */
 .print-dossier .badge {
   display: inline-block;
   font-size: 0.72rem;
@@ -159,7 +201,12 @@
   padding: 2px 7px;
   border-radius: 4px;
   text-align: center;
-  white-space: nowrap;
+  max-width: 100%;
+  box-sizing: border-box;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: break-word;
+  line-height: 1.25;
 }
 
 .print-dossier .badge-verified {
