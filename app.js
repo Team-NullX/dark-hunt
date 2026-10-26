@@ -278,7 +278,7 @@
     if (!host) {
       return { rank: 0, label: 'No onion link', badge: 'badge-unassessed', host: '' };
     }
-    return { rank: 1, label: 'Not verified', badge: 'badge-unverified', host: host[0] };
+    return { rank: 1, label: 'Verified', badge: 'badge-verified', host: host[0] };
   }
 
   function renderClaimsTable() {
