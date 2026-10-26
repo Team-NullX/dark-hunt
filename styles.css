@@ -89,6 +89,13 @@ button, input, select { font: inherit; color: inherit; }
   min-width: 0;
 }
 
+.nav-links {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
 .nav-brand {
   display: flex;
   align-items: center;
@@ -362,7 +369,8 @@ button, input, select { font: inherit; color: inherit; }
 .export-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
 
 .table-container { 
-  width: 100%; 
+  width: 100%;
+  max-width: 100%;
   overflow-x: auto; 
   -webkit-overflow-scrolling: touch; 
 }
@@ -788,17 +796,40 @@ button, input, select { font: inherit; color: inherit; }
 .gallery-item { font-size: 0.9rem; color: var(--quiet); }
 
 @media (max-width: 800px) {
+  .nav-container,
+  .app-main { width: min(100% - 1.25rem, 1720px); }
+  .nav-container {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      "logo title theme"
+      "links links links";
+    align-items: center;
+    gap: 0.45rem 0.65rem;
+  }
+  .nav-side,
+  .nav-brand { display: contents; }
+  .nav-logo {
+    grid-area: logo;
+    align-self: start;
+    width: 48px;
+    height: 48px;
+    margin-right: 0;
+  }
+  .nav-brand-text { grid-area: title; text-align: left; }
+  .theme-toggle { grid-area: theme; justify-self: end; align-self: start; }
+  .nav-links { grid-area: links; }
+  .header-title { font-size: 1.35rem; }
+  .header-subtitle { max-width: none; font-size: 0.88rem; }
   .case-open,
-  .modal-grid,
-  .nav-brand { display: flex; flex-direction: column; align-items: flex-start; }
-  .nav-brand { text-align: left; margin-left: 0; }
+  .modal-grid { display: flex; flex-direction: column; align-items: flex-start; }
   .studio-row { grid-template-columns: 1fr; }
   .stamp { transform: none; }
   .nav-btn { padding: 0.32rem 0.6rem; font-size: 0.92rem; }
   .filter-group { flex-direction: column; align-items: stretch; width: 100%; }
   .select-input,
   .text-input,
-  .search-input-wrapper { width: 100%; }
+  .search-input-wrapper { width: 100%; min-width: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
