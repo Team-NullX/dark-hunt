@@ -30,9 +30,7 @@
         </div>
       </div>
       <div class="header-metadata">
-        <div class="meta-pill"><span class="meta-label">Project Deadline:</span> 31 October 2026</div>
-        <div class="meta-pill"><span class="meta-label">Coverage Date:</span> 2026-10-26</div>
-        <div class="meta-pill status-pill-secure"><span class="meta-label">Mode:</span> Strict Offline (Zero Remote Calls)</div>
+        <p class="header-facts">Deadline 31 Oct 2026 · Coverage 2026-10-26</p>
         <button type="button" class="theme-toggle" id="theme-toggle" aria-pressed="false">Light theme</button>
       </div>
     </div>
@@ -41,27 +39,10 @@
   <!-- Global Navigation -->
   <nav class="app-nav" aria-label="Main Navigation">
     <div class="nav-container">
-      <button class="nav-btn active" data-view="overview" id="nav-btn-overview">
-        <span class="nav-icon">&block;</span> Overview (KPI Summary)
-      </button>
-      <button class="nav-btn" data-view="search" id="nav-btn-search">
-        <span class="nav-icon">&telrec;</span> Exposure Search
-      </button>
-      <button class="nav-btn" data-view="sources" id="nav-btn-sources">
-        <span class="nav-icon">&infin;</span> Source Register
-      </button>
-      <button class="nav-btn" data-view="evidence" id="nav-btn-evidence">
-        <span class="nav-icon">&equiv;</span> Evidence Registry
-      </button>
-      <button class="nav-btn" data-view="threat" id="nav-btn-threat">
-        <span class="nav-icon">&odot;</span> Threat &amp; Impact
-      </button>
-      <button class="nav-btn" data-view="response" id="nav-btn-response">
-        <span class="nav-icon">&malt;</span> Recommended Response
-      </button>
-      <button class="nav-btn" data-view="briefing" id="nav-btn-briefing">
-        <span class="nav-icon">&sect;</span> Print Briefing
-      </button>
+      <button class="nav-btn active" data-view="overview" id="nav-btn-overview">Overview</button>
+      <button class="nav-btn" data-view="search" id="nav-btn-search">Claims</button>
+      <button class="nav-btn" data-view="evidence" id="nav-btn-evidence">Evidence</button>
+      <button class="nav-btn" data-view="briefing" id="nav-btn-briefing">Briefing</button>
     </div>
   </nav>
 
@@ -238,6 +219,7 @@
               <th data-sort="threat_level">Threat Level &uarr;&darr;</th>
               <th data-sort="verification_status">Verification &uarr;&darr;</th>
               <th data-sort="source_name">Platform / Source &uarr;&darr;</th>
+              <th data-sort="onion_link_verified">Onion link verified &uarr;&darr;</th>
               <th data-sort="source_date">Incident Date &uarr;&darr;</th>
               <th>Evidence Reference</th>
               <th>Summary (Redacted)</th>
@@ -260,7 +242,7 @@
     </section>
 
     <!-- VIEW 3: RESEARCH SOURCE REGISTER -->
-    <section id="view-sources" class="view-section">
+    <section id="view-sources" class="folded-panel">
       <div class="section-header">
         <div>
           <h2>Research Source Register</h2>
@@ -326,7 +308,7 @@
     </section>
 
     <!-- VIEW 5: THREAT & IMPACT -->
-    <section id="view-threat" class="view-section">
+    <section id="view-threat" class="folded-panel">
       <div class="section-header">
         <div>
           <h2>National Cyber Threat &amp; Impact Assessment Matrix</h2>
@@ -369,7 +351,7 @@
     </section>
 
     <!-- VIEW 6: RECOMMENDED RESPONSE -->
-    <section id="view-response" class="view-section">
+    <section id="view-response" class="folded-panel">
       <div class="section-header">
         <div>
           <h2>Defensive Response Framework &amp; Action Matrix</h2>
@@ -477,15 +459,25 @@
           </div>
         </section>
 
+        <section class="dossier-chapter page-break">
+          <h3>5. Dark Web (.onion) Sources &amp; Threat Actor Leak Portal Register</h3>
+          <p>
+            Lawfully documented darknet leak sites, ransomware extortion portals, and onion directories containing public exposure records relevant to Bangladesh Key Point Installations (KPIs) and critical enterprise entities. All entries reflect passive observation records without active crawler deployment.
+          </p>
+          <div id="briefing-onion-register">
+            <!-- Dynamically populated with all available .onion URLs -->
+          </div>
+        </section>
+
         <section class="dossier-chapter">
-          <h3>5. Strategic Defensive Recommendations</h3>
+          <h3>6. Strategic Defensive Recommendations</h3>
           <div id="briefing-recommendations">
             <!-- Dynamically populated -->
           </div>
         </section>
 
         <section class="dossier-chapter page-break">
-          <h3>6. Evidence Register &amp; Cryptographic SHA-256 Integrity Hashes</h3>
+          <h3>7. Evidence Register &amp; Cryptographic SHA-256 Integrity Hashes</h3>
           <div id="briefing-evidence-list">
             <!-- Dynamically populated -->
           </div>

@@ -102,13 +102,13 @@ body {
 }
 
 .header-container {
-  max-width: 1600px;
+  width: min(100%, 1600px);
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: clamp(0.6rem, 1.5vw, 1rem);
 }
 
 .header-brand {
@@ -118,8 +118,8 @@ body {
 }
 
 .brand-logo {
-  height: 64px;
-  width: 64px;
+  height: clamp(48px, 8vh, 64px);
+  width: clamp(48px, 8vh, 64px);
   object-fit: contain;
   flex-shrink: 0;
   background: #0b1220;
@@ -129,7 +129,7 @@ body {
 }
 
 .header-title {
-  font-size: 1.25rem;
+  font-size: clamp(1rem, 1.5vw, 1.35rem);
   font-weight: 700;
   color: #ffffff;
   letter-spacing: 0.02em;
@@ -143,7 +143,16 @@ body {
 .header-metadata {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-left: auto;
+}
+
+.header-facts {
+  color: var(--text-muted);
+  font-size: clamp(0.72rem, 1.1vw, 0.8rem);
+  white-space: nowrap;
 }
 
 .meta-pill {
@@ -197,11 +206,11 @@ body {
 }
 
 .nav-container {
-  max-width: 1600px;
+  width: min(100%, 1600px);
   margin: 0 auto;
   display: flex;
-  overflow-x: auto;
-  padding: 0 1rem;
+  flex-wrap: wrap;
+  padding: 0 clamp(0.75rem, 2vw, 1.5rem);
 }
 
 .nav-btn {
@@ -238,9 +247,8 @@ body {
 
 /* ================= Main Container ================= */
 .app-main {
-  max-width: 1600px;
-  margin: 1.5rem auto;
-  padding: 0 1.5rem;
+  width: min(100% - 2 * clamp(0.75rem, 2vw, 1.5rem), 1600px);
+  margin: clamp(0.75rem, 2vh, 1.5rem) auto;
 }
 
 .legal-banner {
@@ -301,9 +309,10 @@ body {
 
 /* ================= Quick Stats ================= */
 .quick-stats-row {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
   gap: 0.75rem;
+  width: min(100%, 720px);
 }
 
 .stat-card {
@@ -1025,10 +1034,36 @@ html[data-theme="light"] .modal-overlay {
   background-color: rgba(15, 23, 42, 0.45);
 }
 
+.folded-panel {
+  margin-top: clamp(1.5rem, 4vh, 2.5rem);
+}
+
+.onion-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  min-width: 9rem;
+}
+
+.onion-host {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  word-break: break-all;
+}
+
 @media (max-width: 900px) {
   .header-container {
     flex-direction: column;
     align-items: flex-start;
+  }
+  .header-metadata {
+    margin-left: 0;
+    justify-content: flex-start;
+  }
+  .header-facts {
+    white-space: normal;
   }
   .search-filters-grid {
     grid-template-columns: 1fr;

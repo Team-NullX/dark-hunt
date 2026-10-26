@@ -128,6 +128,7 @@
   // Briefing elements
   const briefingKpiSummary = document.getElementById('briefing-kpi-summary');
   const briefingMajorIncidents = document.getElementById('briefing-major-incidents');
+  const briefingOnionRegister = document.getElementById('briefing-onion-register');
   const briefingRecommendations = document.getElementById('briefing-recommendations');
   const briefingEvidenceList = document.getElementById('briefing-evidence-list');
 
@@ -271,11 +272,24 @@
     });
   }
 
+  function onionLinkState(url) {
+    const raw = String(url || '');
+    const host = raw.match(/[a-z2-7]{16,63}\.onion/i);
+    if (!host) {
+      return { rank: 0, label: 'No onion link', badge: 'badge-unassessed', host: '' };
+    }
+    return { rank: 1, label: 'Not verified', badge: 'badge-unverified', host: host[0] };
+  }
+
   function renderClaimsTable() {
     let filtered = getFilteredClaims();
 
     // Sort
     filtered.sort((a, b) => {
+      if (state.claimSortCol === 'onion_link_verified') {
+        const diff = onionLinkState(a.source_url_or_ref).rank - onionLinkState(b.source_url_or_ref).rank;
+        return state.claimSortAsc ? diff : -diff;
+      }
       let vA = a[state.claimSortCol] || '';
       let vB = b[state.claimSortCol] || '';
       if (typeof vA === 'string') {
@@ -299,10 +313,11 @@
 
     claimsTableBody.innerHTML = '';
     if (pageRecords.length === 0) {
-      claimsTableBody.innerHTML = `<tr><td colspan="10" style="text-align: center; padding: 2rem; color: var(--text-muted);">No matching exposure claims located under the specified filters.</td></tr>`;
+      claimsTableBody.innerHTML = `<tr><td colspan="11" style="text-align: center; padding: 2rem; color: var(--text-muted);">No matching exposure claims located under the specified filters.</td></tr>`;
     } else {
       pageRecords.forEach(c => {
         const tr = document.createElement('tr');
+        const onion = onionLinkState(c.source_url_or_ref);
         tr.innerHTML = `
           <td class="mono-cell"><strong>${escapeHtml(c.claim_id)}</strong></td>
           <td><strong>${escapeHtml(c.kpi_name)}</strong> <small style="color: #94a3b8;">(${escapeHtml(c.kpi_id)})</small></td>
@@ -310,6 +325,7 @@
           <td><span class="badge ${getThreatBadgeClass(c.threat_level)}">${escapeHtml(c.threat_level)}</span></td>
           <td><span class="badge ${getVerifBadgeClass(c.verification_status)}">${escapeHtml(c.verification_status)}</span></td>
           <td>${escapeHtml(c.source_name)}</td>
+          <td class="onion-cell"><span class="badge ${onion.badge}">${escapeHtml(onion.label)}</span>${onion.host ? `<span class="onion-host">${escapeHtml(onion.host)}</span>` : ''}</td>
           <td class="mono-cell">${escapeHtml(c.source_date)}</td>
           <td class="mono-cell" style="font-size: 0.75rem;">${escapeHtml(c.evidence_ref)}</td>
           <td style="max-width: 280px; font-size: 0.78rem;">${escapeHtml(c.summary_redacted.slice(0, 110))}...</td>
@@ -473,7 +489,15 @@
   // View 7: Print Briefing Dossier
   // -----------------------------------------------------------
   function renderBriefing() {
-    // KPI summary table
+    // Collect KPIs that have darknet / onion breach claims
+    const onionKpiIds = new Set();
+    DATA.inventory.forEach(c => {
+      if (c.source_url_or_ref && c.source_url_or_ref.includes('.onion') && c.kpi_id) {
+        onionKpiIds.add(c.kpi_id);
+      }
+    });
+
+    // 1. KPI summary table
     let kpiHtml = `
       <table class="dossier-table">
         <thead>
@@ -489,13 +513,21 @@
         <tbody>
     `;
     DATA.kpis.forEach(k => {
+      const hasOnion = onionKpiIds.has(k.kpi_id);
+      const onionIndicator = hasOnion
+        ? `<span class="onion-badge" style="margin-left: 5px; font-size: 0.68rem; padding: 1px 5px;" title="Contains documented Dark Web .onion leak claim">🧅 .onion</span>`
+        : '';
+
       kpiHtml += `
         <tr>
           <td><strong>${escapeHtml(k.kpi_id)}</strong></td>
           <td>${escapeHtml(k.kpi_name)}</td>
           <td>${escapeHtml(k.sector)}</td>
-          <td>${k.claim_count > 0 ? k.claim_count + ' incident(s)' : 'No claims located'}</td>
-          <td>${escapeHtml(k.highest_threat)}</td>
+          <td>
+            ${k.claim_count > 0 ? k.claim_count + ' incident(s)' : 'No claims located'}
+            ${onionIndicator}
+          </td>
+          <td><span class="badge ${getThreatBadgeClass(k.highest_threat)}">${escapeHtml(k.highest_threat)}</span></td>
           <td>${escapeHtml(k.verification_status)}</td>
         </tr>
       `;
@@ -503,29 +535,38 @@
     kpiHtml += `</tbody></table>`;
     briefingKpiSummary.innerHTML = kpiHtml;
 
-    // Major incidents (Critical / High threat)
+    // 2. Major incidents (Critical / High threat) with available Source / .onion URLs
     const majorClaims = DATA.inventory.filter(c => c.threat_level === 'Critical' || c.threat_level === 'High').slice(0, 15);
     let majHtml = `
       <table class="dossier-table">
         <thead>
           <tr>
-            <th>Claim ID</th>
-            <th>Target Entity</th>
-            <th>Threat Level</th>
-            <th>Platform / Leak Source</th>
-            <th>Incident Date</th>
-            <th>Verified Summary</th>
+            <th style="width: 10%;">Claim ID</th>
+            <th style="width: 18%;">Target Entity</th>
+            <th style="width: 10%;">Threat Level</th>
+            <th style="width: 30%;">Platform / Leak Source &amp; URL</th>
+            <th style="width: 12%;">Incident Date</th>
+            <th style="width: 20%;">Verified Summary</th>
           </tr>
         </thead>
         <tbody>
     `;
     majorClaims.forEach(c => {
+      let sourceDisplay = `<div><strong>${escapeHtml(c.source_name)}</strong></div>`;
+      if (c.source_url_or_ref) {
+        if (c.source_url_or_ref.includes('.onion')) {
+          sourceDisplay += `<div class="onion-badge">🧅 ${escapeHtml(c.source_url_or_ref)}</div>`;
+        } else if (c.source_url_or_ref.startsWith('http')) {
+          sourceDisplay += `<div class="source-sub-url">${escapeHtml(c.source_url_or_ref)}</div>`;
+        }
+      }
+
       majHtml += `
         <tr>
           <td><strong>${escapeHtml(c.claim_id)}</strong></td>
           <td><strong>${escapeHtml(c.kpi_name)}</strong></td>
-          <td>${escapeHtml(c.threat_level)}</td>
-          <td>${escapeHtml(c.source_name)}</td>
+          <td><span class="badge ${getThreatBadgeClass(c.threat_level)}">${escapeHtml(c.threat_level)}</span></td>
+          <td>${sourceDisplay}</td>
           <td>${escapeHtml(c.source_date)}</td>
           <td>${escapeHtml(c.summary_redacted)}</td>
         </tr>
@@ -534,7 +575,95 @@
     majHtml += `</tbody></table>`;
     briefingMajorIncidents.innerHTML = majHtml;
 
-    // Recommendations
+    // 3. Dedicated Dark Web (.onion) Threat Sources & Leak Portal Register
+    if (briefingOnionRegister) {
+      const onionClaims = DATA.inventory.filter(c => c.source_url_or_ref && c.source_url_or_ref.includes('.onion'));
+      const onionSources = DATA.sources.filter(s => s.is_onion || (s.url_or_ref && s.url_or_ref.includes('.onion')));
+
+      let onionHtml = `
+        <h4 style="font-size: 0.95rem; font-weight: 700; color: #991b1b; margin-top: 1rem; margin-bottom: 0.5rem;">
+          5.1 Documented Breach Claims with Available Dark Web (.onion) URLs (${onionClaims.length} Incidents)
+        </h4>
+        <p style="font-size: 0.85rem; color: #475569; margin-bottom: 0.6rem;">
+          Exposures identified on Tor hidden service ransomware blogs, breach forums, and extortion sites directly targeting Bangladeshi public and private infrastructure.
+        </p>
+        <table class="dossier-table">
+          <thead>
+            <tr>
+              <th style="width: 9%;">Claim ID</th>
+              <th style="width: 17%;">Target Entity &amp; Sector</th>
+              <th style="width: 9%;">Threat Level</th>
+              <th style="width: 36%;">Dark Web (.onion) Link / Leak Portal</th>
+              <th style="width: 11%;">Incident Date</th>
+              <th style="width: 18%;">Evidence / Integrity</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      onionClaims.forEach(c => {
+        onionHtml += `
+          <tr>
+            <td><strong>${escapeHtml(c.claim_id)}</strong></td>
+            <td>
+              <strong>${escapeHtml(c.kpi_name)}</strong>
+              <div style="font-size: 0.72rem; color: #64748b;">${escapeHtml(c.sector)}</div>
+            </td>
+            <td><span class="badge ${getThreatBadgeClass(c.threat_level)}">${escapeHtml(c.threat_level)}</span></td>
+            <td>
+              <div class="onion-badge" style="font-weight: 600;">🧅 ${escapeHtml(c.source_url_or_ref)}</div>
+              <div style="font-size: 0.72rem; color: #475569; margin-top: 3px;"><em>Source: ${escapeHtml(c.source_name)}</em></div>
+              <div style="font-size: 0.74rem; color: #334155; margin-top: 4px;">${escapeHtml(c.summary_redacted)}</div>
+            </td>
+            <td>${escapeHtml(c.source_date)}</td>
+            <td>
+              <code>${escapeHtml(c.evidence_ref || 'EVD-REG')}</code>
+              <div style="font-family: monospace; font-size: 0.68rem; color: #64748b; word-break: break-all; margin-top: 2px;">
+                ${escapeHtml(c.artefact_sha256 ? c.artefact_sha256.substring(0, 16) + '...' : 'Verified')}
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+      onionHtml += `</tbody></table>`;
+
+      onionHtml += `
+        <h4 style="font-size: 0.95rem; font-weight: 700; color: #0f172a; margin-top: 1.5rem; margin-bottom: 0.5rem;">
+          5.2 Passive Darknet (.onion) Threat Intelligence Catalogs &amp; Directories (${onionSources.length} Sources)
+        </h4>
+        <p style="font-size: 0.85rem; color: #475569; margin-bottom: 0.6rem;">
+          Public dark web directories and indexes audited passively for breach mentions, ransomware blogs, and paste sites.
+        </p>
+        <table class="dossier-table">
+          <thead>
+            <tr>
+              <th style="width: 10%;">Source ID</th>
+              <th style="width: 20%;">Platform / Directory Name</th>
+              <th style="width: 16%;">Category</th>
+              <th style="width: 36%;">Tor Hidden Service (.onion) Address</th>
+              <th style="width: 18%;">Verification Status</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      onionSources.forEach(s => {
+        onionHtml += `
+          <tr>
+            <td><strong>${escapeHtml(s.source_id)}</strong></td>
+            <td><strong>${escapeHtml(s.source_name)}</strong></td>
+            <td>${escapeHtml(s.category)}</td>
+            <td><span class="onion-badge">🧅 ${escapeHtml(s.url_or_ref)}</span></td>
+            <td><span class="badge ${getVerifBadgeClass(s.verification_status)}">${escapeHtml(s.verification_status)}</span></td>
+          </tr>
+        `;
+      });
+      onionHtml += `</tbody></table>`;
+
+      briefingOnionRegister.innerHTML = onionHtml;
+    }
+
+    // 4. Strategic Recommendations
     let recHtml = `
       <table class="dossier-table">
         <thead>
@@ -551,12 +680,12 @@
             <td>Immediate isolation of compromised Exchange/API integration gateways. Perform domain-wide password revocation, revoke inactive API tokens, enforce MFA on all administrative consoles.</td>
           </tr>
           <tr>
-            <td><strong>State Defense & Law Enforcement</strong></td>
-            <td><strong>LEA & National Security</strong></td>
+            <td><strong>State Defense &amp; Law Enforcement</strong></td>
+            <td><strong>LEA &amp; National Security</strong></td>
             <td>Active forensic review of exposed perimeter services. Threat hunting for RemotePE, Babuk, and Medusa implant indicators. Coordinate lawful evidence custody.</td>
           </tr>
           <tr>
-            <td><strong>Commercial Sector & Supply Chain</strong></td>
+            <td><strong>Commercial Sector &amp; Supply Chain</strong></td>
             <td><strong>Infrastructure Operators</strong></td>
             <td>Notification to affected account holders regarding breached databases. Patch exposed Apache/Nginx web instances and deploy Web Application Firewalls (WAF).</td>
           </tr>
@@ -565,7 +694,7 @@
     `;
     briefingRecommendations.innerHTML = recHtml;
 
-    // Evidence hashes
+    // 5. Evidence hashes
     let evHtml = `
       <table class="dossier-table">
         <thead>
@@ -975,6 +1104,10 @@
       renderClaimsTable();
     });
   });
+
+  document.getElementById('view-overview').appendChild(document.getElementById('view-threat'));
+  document.getElementById('view-overview').appendChild(document.getElementById('view-response'));
+  document.getElementById('view-search').appendChild(document.getElementById('view-sources'));
 
   // -----------------------------------------------------------
   // Initialize Application
