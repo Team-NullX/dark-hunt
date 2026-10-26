@@ -499,15 +499,15 @@
 
     // 1. KPI summary table
     let kpiHtml = `
-      <table class="dossier-table">
+      <table class="dossier-table" style="table-layout: fixed; width: 100%;">
         <thead>
           <tr>
-            <th>KPI ID</th>
-            <th>Designated Installation / Entity</th>
-            <th>Sector</th>
-            <th>Documented Claims</th>
-            <th>Threat Assessment</th>
-            <th>Verification Status</th>
+            <th style="width: 11%;">KPI ID</th>
+            <th style="width: 27%;">Designated Installation / Entity</th>
+            <th style="width: 17%;">Sector</th>
+            <th style="width: 17%;">Documented Claims</th>
+            <th style="width: 12%; text-align: center;">Threat Level</th>
+            <th style="width: 16%; text-align: center;">Verification Status</th>
           </tr>
         </thead>
         <tbody>
@@ -515,20 +515,26 @@
     DATA.kpis.forEach(k => {
       const hasOnion = onionKpiIds.has(k.kpi_id);
       const onionIndicator = hasOnion
-        ? `<span class="onion-badge" style="margin-left: 5px; font-size: 0.68rem; padding: 1px 5px;" title="Contains documented Dark Web .onion leak claim">🧅 .onion</span>`
+        ? `<span class="onion-badge" title="Documented onion address">.onion</span>`
         : '';
 
       kpiHtml += `
         <tr>
           <td><strong>${escapeHtml(k.kpi_id)}</strong></td>
-          <td>${escapeHtml(k.kpi_name)}</td>
+          <td style="font-weight: 600;">${escapeHtml(k.kpi_name)}</td>
           <td>${escapeHtml(k.sector)}</td>
           <td>
             ${k.claim_count > 0 ? k.claim_count + ' incident(s)' : 'No claims located'}
             ${onionIndicator}
           </td>
-          <td><span class="badge ${getThreatBadgeClass(k.highest_threat)}">${escapeHtml(k.highest_threat)}</span></td>
-          <td>${escapeHtml(k.verification_status)}</td>
+          <td style="text-align: center; vertical-align: middle;">
+            <span class="badge ${getThreatBadgeClass(k.highest_threat)}">${escapeHtml(k.highest_threat)}</span>
+          </td>
+          <td style="text-align: center; vertical-align: middle;">
+            <span class="badge ${getVerifBadgeClass(k.verification_status)}" style="white-space: nowrap; font-size: 0.72rem; padding: 2px 7px;">
+              ${escapeHtml(k.verification_status)}
+            </span>
+          </td>
         </tr>
       `;
     });
@@ -538,15 +544,15 @@
     // 2. Major incidents (Critical / High threat) with available Source / .onion URLs
     const majorClaims = DATA.inventory.filter(c => c.threat_level === 'Critical' || c.threat_level === 'High').slice(0, 15);
     let majHtml = `
-      <table class="dossier-table">
+      <table class="dossier-table" style="table-layout: fixed; width: 100%;">
         <thead>
           <tr>
-            <th style="width: 10%;">Claim ID</th>
+            <th style="width: 9%;">Claim ID</th>
             <th style="width: 18%;">Target Entity</th>
-            <th style="width: 10%;">Threat Level</th>
-            <th style="width: 30%;">Platform / Leak Source &amp; URL</th>
-            <th style="width: 12%;">Incident Date</th>
-            <th style="width: 20%;">Verified Summary</th>
+            <th style="width: 10%; text-align: center;">Threat Level</th>
+            <th style="width: 31%;">Platform / Leak Source &amp; URL</th>
+            <th style="width: 11%; text-align: center;">Incident Date</th>
+            <th style="width: 21%;">Verified Summary</th>
           </tr>
         </thead>
         <tbody>
@@ -555,7 +561,7 @@
       let sourceDisplay = `<div><strong>${escapeHtml(c.source_name)}</strong></div>`;
       if (c.source_url_or_ref) {
         if (c.source_url_or_ref.includes('.onion')) {
-          sourceDisplay += `<div class="onion-badge">🧅 ${escapeHtml(c.source_url_or_ref)}</div>`;
+          sourceDisplay += `<div class="onion-badge">${escapeHtml(c.source_url_or_ref)}</div>`;
         } else if (c.source_url_or_ref.startsWith('http')) {
           sourceDisplay += `<div class="source-sub-url">${escapeHtml(c.source_url_or_ref)}</div>`;
         }
@@ -565,10 +571,12 @@
         <tr>
           <td><strong>${escapeHtml(c.claim_id)}</strong></td>
           <td><strong>${escapeHtml(c.kpi_name)}</strong></td>
-          <td><span class="badge ${getThreatBadgeClass(c.threat_level)}">${escapeHtml(c.threat_level)}</span></td>
+          <td style="text-align: center; vertical-align: middle;">
+            <span class="badge ${getThreatBadgeClass(c.threat_level)}">${escapeHtml(c.threat_level)}</span>
+          </td>
           <td>${sourceDisplay}</td>
-          <td>${escapeHtml(c.source_date)}</td>
-          <td>${escapeHtml(c.summary_redacted)}</td>
+          <td style="text-align: center; font-family: monospace; font-size: 0.75rem;">${escapeHtml(c.source_date)}</td>
+          <td style="font-size: 0.76rem; line-height: 1.45;">${escapeHtml(c.summary_redacted)}</td>
         </tr>
       `;
     });
@@ -587,15 +595,15 @@
         <p style="font-size: 0.85rem; color: #475569; margin-bottom: 0.6rem;">
           Exposures identified on Tor hidden service ransomware blogs, breach forums, and extortion sites directly targeting Bangladeshi public and private infrastructure.
         </p>
-        <table class="dossier-table">
+        <table class="dossier-table" style="table-layout: fixed; width: 100%;">
           <thead>
             <tr>
               <th style="width: 9%;">Claim ID</th>
-              <th style="width: 17%;">Target Entity &amp; Sector</th>
-              <th style="width: 9%;">Threat Level</th>
-              <th style="width: 36%;">Dark Web (.onion) Link / Leak Portal</th>
-              <th style="width: 11%;">Incident Date</th>
-              <th style="width: 18%;">Evidence / Integrity</th>
+              <th style="width: 18%;">Target Entity &amp; Sector</th>
+              <th style="width: 10%; text-align: center;">Threat Level</th>
+              <th style="width: 35%;">Dark Web (.onion) Link / Leak Portal</th>
+              <th style="width: 11%; text-align: center;">Incident Date</th>
+              <th style="width: 17%; text-align: center;">Evidence Ref</th>
             </tr>
           </thead>
           <tbody>
@@ -609,14 +617,16 @@
               <strong>${escapeHtml(c.kpi_name)}</strong>
               <div style="font-size: 0.72rem; color: #64748b;">${escapeHtml(c.sector)}</div>
             </td>
-            <td><span class="badge ${getThreatBadgeClass(c.threat_level)}">${escapeHtml(c.threat_level)}</span></td>
-            <td>
-              <div class="onion-badge" style="font-weight: 600;">🧅 ${escapeHtml(c.source_url_or_ref)}</div>
-              <div style="font-size: 0.72rem; color: #475569; margin-top: 3px;"><em>Source: ${escapeHtml(c.source_name)}</em></div>
-              <div style="font-size: 0.74rem; color: #334155; margin-top: 4px;">${escapeHtml(c.summary_redacted)}</div>
+            <td style="text-align: center; vertical-align: middle;">
+              <span class="badge ${getThreatBadgeClass(c.threat_level)}">${escapeHtml(c.threat_level)}</span>
             </td>
-            <td>${escapeHtml(c.source_date)}</td>
             <td>
+              <div class="onion-badge">${escapeHtml(c.source_url_or_ref)}</div>
+              <div style="font-size: 0.72rem; color: #475569; margin-top: 3px;"><em>Source: ${escapeHtml(c.source_name)}</em></div>
+              <div style="font-size: 0.74rem; color: #334155; margin-top: 4px; line-height: 1.4;">${escapeHtml(c.summary_redacted)}</div>
+            </td>
+            <td style="text-align: center; font-family: monospace; font-size: 0.75rem;">${escapeHtml(c.source_date)}</td>
+            <td style="text-align: center; vertical-align: middle;">
               <code>${escapeHtml(c.evidence_ref || 'EVD-REG')}</code>
               <div style="font-family: monospace; font-size: 0.68rem; color: #64748b; word-break: break-all; margin-top: 2px;">
                 ${escapeHtml(c.artefact_sha256 ? c.artefact_sha256.substring(0, 16) + '...' : 'Verified')}
@@ -634,14 +644,14 @@
         <p style="font-size: 0.85rem; color: #475569; margin-bottom: 0.6rem;">
           Public dark web directories and indexes audited passively for breach mentions, ransomware blogs, and paste sites.
         </p>
-        <table class="dossier-table">
+        <table class="dossier-table" style="table-layout: fixed; width: 100%;">
           <thead>
             <tr>
               <th style="width: 10%;">Source ID</th>
               <th style="width: 20%;">Platform / Directory Name</th>
               <th style="width: 16%;">Category</th>
               <th style="width: 36%;">Tor Hidden Service (.onion) Address</th>
-              <th style="width: 18%;">Verification Status</th>
+              <th style="width: 18%; text-align: center;">Verification Status</th>
             </tr>
           </thead>
           <tbody>
@@ -653,8 +663,10 @@
             <td><strong>${escapeHtml(s.source_id)}</strong></td>
             <td><strong>${escapeHtml(s.source_name)}</strong></td>
             <td>${escapeHtml(s.category)}</td>
-            <td><span class="onion-badge">🧅 ${escapeHtml(s.url_or_ref)}</span></td>
-            <td><span class="badge ${getVerifBadgeClass(s.verification_status)}">${escapeHtml(s.verification_status)}</span></td>
+            <td><span class="onion-badge">${escapeHtml(s.url_or_ref)}</span></td>
+            <td style="text-align: center; vertical-align: middle;">
+              <span class="badge ${getVerifBadgeClass(s.verification_status)}">${escapeHtml(s.verification_status)}</span>
+            </td>
           </tr>
         `;
       });
@@ -665,12 +677,12 @@
 
     // 4. Strategic Recommendations
     let recHtml = `
-      <table class="dossier-table">
+      <table class="dossier-table" style="table-layout: fixed; width: 100%;">
         <thead>
           <tr>
-            <th>Target Category</th>
-            <th>Designated Responder</th>
-            <th>Prescribed Defensive Action</th>
+            <th style="width: 25%;">Target Category</th>
+            <th style="width: 22%;">Designated Responder</th>
+            <th style="width: 53%;">Prescribed Defensive Action</th>
           </tr>
         </thead>
         <tbody>

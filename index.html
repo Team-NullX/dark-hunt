@@ -25,12 +25,12 @@
       <div class="header-brand">
         <img class="brand-logo" src="tnx-logo.png" alt="Team NullX" width="64" height="64">
         <div>
-          <h1 class="header-title">TEAM NULLX | PROJECT DARK HUNT</h1>
-          <p class="header-subtitle">Public-source exposure briefing &bull; Key Point Installations (KPI) Threat Intelligence</p>
+          <h1 class="header-title">Dark Hunt</h1>
+          <p class="header-subtitle">Team NullX. Public claims on Bangladesh’s key installations.</p>
         </div>
       </div>
       <div class="header-metadata">
-        <p class="header-facts">Deadline 31 Oct 2026 · Coverage 2026-10-26</p>
+        <p class="header-facts"><span>Closes 31 Oct 2026</span><span>Recorded 26 Oct 2026</span></p>
         <button type="button" class="theme-toggle" id="theme-toggle" aria-pressed="false">Light theme</button>
       </div>
     </div>
@@ -50,43 +50,17 @@
   <main class="app-main">
     
     <!-- Legal Gate Status Alert Banner -->
-    <div class="legal-banner" id="legal-banner">
-      <div class="legal-badge">&check; LEGAL EXPORT GATE ACTIVE</div>
-      <div class="legal-text">
-        Briefing dissemination and CSV/JSON export are governed by strict verification authorization (<code>legal_gate_ok === true</code>).
-        All citizen PII, credentials, and sensitive authentications are strictly redacted.
-      </div>
-    </div>
+    <p class="legal-text">Citizen identity stays out of this file, including exports.</p>
 
     <!-- VIEW 1: OVERVIEW (KPI EXPOSURE SUMMARY) -->
     <section id="view-overview" class="view-section active">
-      <div class="section-header">
+      <div class="case-open">
         <div>
-          <h2>45 Key Point Installations (KPI) — National Exposure Inventory</h2>
-          <p class="section-desc">Comprehensive status ledger across all 45 designated Critical Information Infrastructures of Bangladesh.</p>
+          <h2 class="case-line"><span id="stat-kpis-with-claims">23</span> of <span id="stat-total-kpis">45</span> key installations have a public exposure claim.</h2>
+          <p class="case-follow"><span id="stat-kpis-unassessed">22</span> have nothing on record. Absence from this file is not a clearance.</p>
+          <p class="case-aside"><span id="stat-total-claims">68</span> claims filed. <span id="stat-total-evidence">40</span> evidence files kept.</p>
         </div>
-        <div class="quick-stats-row">
-          <div class="stat-card">
-            <span class="stat-num" id="stat-total-kpis">45</span>
-            <span class="stat-label">National KPIs</span>
-          </div>
-          <div class="stat-card stat-alert">
-            <span class="stat-num" id="stat-kpis-with-claims">23</span>
-            <span class="stat-label">KPIs with Documented Claims</span>
-          </div>
-          <div class="stat-card stat-neutral">
-            <span class="stat-num" id="stat-kpis-unassessed">22</span>
-            <span class="stat-label">No Public Claim Located</span>
-          </div>
-          <div class="stat-card stat-warning">
-            <span class="stat-num" id="stat-total-claims">68</span>
-            <span class="stat-label">Total Documented Claims</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-num" id="stat-total-evidence">40</span>
-            <span class="stat-label">Evidence Artifacts</span>
-          </div>
-        </div>
+        <p class="stamp">Restricted</p>
       </div>
 
       <!-- Overview Filter Bar -->
@@ -116,14 +90,14 @@
         <table class="data-table" id="kpi-table">
           <thead>
             <tr>
-              <th data-sort="kpi_id">KPI ID &uarr;&darr;</th>
-              <th data-sort="kpi_name">Installation / Entity Name &uarr;&darr;</th>
-              <th data-sort="sector">Sector &uarr;&darr;</th>
-              <th data-sort="criticality">Criticality &uarr;&darr;</th>
-              <th data-sort="claim_count">Claims Count &uarr;&darr;</th>
-              <th data-sort="highest_threat">Highest Threat Level &uarr;&darr;</th>
-              <th data-sort="verification_status">Verification Status &uarr;&darr;</th>
-              <th data-sort="latest_source_date">Latest Recorded Date &uarr;&darr;</th>
+              <th data-sort="kpi_id">KPI ID</th>
+              <th data-sort="kpi_name">Installation / Entity Name</th>
+              <th data-sort="sector">Sector</th>
+              <th data-sort="criticality">Criticality</th>
+              <th data-sort="claim_count">Claims Count</th>
+              <th data-sort="highest_threat">Highest Threat Level</th>
+              <th data-sort="verification_status">Verification Status</th>
+              <th data-sort="latest_source_date">Latest Recorded Date</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -141,12 +115,12 @@
     <section id="view-search" class="view-section">
       <div class="section-header">
         <div>
-          <h2>Exposure Search &amp; Claim Dossier</h2>
-          <p class="section-desc">Search, filter, and audit all 68 lawfully documented exposure incidents across critical infrastructure and supply chain targets.</p>
+          <h2>Claims</h2>
+          <p class="section-desc">Each row is one public claim. An onion address here was written down, not opened.</p>
         </div>
         <div class="export-actions">
-          <button class="btn btn-secondary" id="export-csv-btn">&darr; Export Filtered CSV</button>
-          <button class="btn btn-secondary" id="export-json-btn">&darr; Export Filtered JSON</button>
+          <button class="btn btn-secondary" id="export-csv-btn">Export CSV</button>
+          <button class="btn btn-secondary" id="export-json-btn">Export JSON</button>
         </div>
       </div>
 
@@ -157,7 +131,7 @@
             <input type="text" id="claim-search-input" class="text-input" placeholder="Search across target entities, claim IDs, source platforms, evidence IDs, breach summaries..." aria-label="Search Exposure Claims">
             <button class="clear-btn" id="claim-clear-btn" title="Clear search">&times;</button>
           </div>
-          <button class="btn btn-primary" id="claim-reset-all-btn">Reset All Filters</button>
+          <button class="btn btn-primary" id="claim-reset-all-btn">Reset filters</button>
         </div>
 
         <div class="search-filters-grid">
@@ -213,14 +187,14 @@
         <table class="data-table" id="claims-table">
           <thead>
             <tr>
-              <th data-sort="claim_id">Claim ID &uarr;&darr;</th>
-              <th data-sort="kpi_name">Target Entity / KPI &uarr;&darr;</th>
-              <th data-sort="sector">Sector &uarr;&darr;</th>
-              <th data-sort="threat_level">Threat Level &uarr;&darr;</th>
-              <th data-sort="verification_status">Verification &uarr;&darr;</th>
-              <th data-sort="source_name">Platform / Source &uarr;&darr;</th>
-              <th data-sort="onion_link_verified">Onion link verified &uarr;&darr;</th>
-              <th data-sort="source_date">Incident Date &uarr;&darr;</th>
+              <th data-sort="claim_id">Claim ID</th>
+              <th data-sort="kpi_name">Target Entity / KPI</th>
+              <th data-sort="sector">Sector</th>
+              <th data-sort="threat_level">Threat Level</th>
+              <th data-sort="verification_status">Verification</th>
+              <th data-sort="source_name">Platform / Source</th>
+              <th data-sort="onion_link_verified">Onion link verified</th>
+              <th data-sort="source_date">Incident Date</th>
               <th>Evidence Reference</th>
               <th>Summary (Redacted)</th>
               <th>Action</th>
