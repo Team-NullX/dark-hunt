@@ -376,9 +376,32 @@ button, input, select { font: inherit; color: inherit; }
 .data-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   line-height: 1.4;
+  table-layout: fixed;
 }
+
+.data-table th {
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.82rem;
+  padding: 0.45rem 0.4rem 0.45rem 0;
+  border-bottom: 1px solid var(--ink);
+  cursor: pointer;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.25;
+}
+
+.data-table td {
+  padding: 0.55rem 0.4rem 0.55rem 0;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.data-table tbody tr:hover { background: color-mix(in srgb, var(--sheet) 70%, transparent); }
 
 #claims-table {
   width: 100%;
@@ -407,24 +430,6 @@ button, input, select { font: inherit; color: inherit; }
   width: 100%;
   text-align: center;
 }
-
-.data-table th {
-  text-align: left;
-  font-weight: 600;
-  font-size: 0.92rem;
-  padding: 0.45rem 0.7rem 0.45rem 0;
-  border-bottom: 1px solid var(--ink);
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.data-table td {
-  padding: 0.7rem 0.7rem 0.7rem 0;
-  border-bottom: 1px solid var(--rule);
-  vertical-align: top;
-}
-
-.data-table tbody tr:hover { background: color-mix(in srgb, var(--sheet) 70%, transparent); }
 
 .table-footer,
 .pagination-bar {
