@@ -4,6 +4,14 @@
    Team NullX
    ========================================================================== */
 
+@font-face {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("fonts/roboto-latin.woff2") format("woff2");
+}
+
 :root {
   --bg-primary: #0b0f19;
   --bg-secondary: #111827;
@@ -39,7 +47,7 @@
   --color-accent: #2563eb;
   --color-accent-hover: #1d4ed8;
 
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  --font-sans: "Roboto", sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   color-scheme: dark;
 }
