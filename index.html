@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    (function () {
+      var saved = localStorage.getItem('pdh-theme');
+      var theme = saved === 'light' || saved === 'dark'
+        ? saved
+        : (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;">
+  <title>PROJECT DARK HUNT — Public-Source Exposure Briefing | Team NullX</title>
+  <link rel="icon" type="image/png" href="tnx-logo.png">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="report.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="header-brand">
+        <img class="brand-logo" src="tnx-logo.png" alt="Team NullX" width="64" height="64">
+        <div>
+          <h1 class="header-title">TEAM NULLX | PROJECT DARK HUNT</h1>
+          <p class="header-subtitle">Public-source exposure briefing &bull; Key Point Installations (KPI) Threat Intelligence</p>
+        </div>
+      </div>
+      <div class="header-metadata">
+        <div class="meta-pill"><span class="meta-label">Project Deadline:</span> 31 October 2026</div>
+        <div class="meta-pill"><span class="meta-label">Coverage Date:</span> 2026-10-26</div>
+        <div class="meta-pill status-pill-secure"><span class="meta-label">Mode:</span> Strict Offline (Zero Remote Calls)</div>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-pressed="false">Light theme</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Global Navigation -->
+  <nav class="app-nav" aria-label="Main Navigation">
+    <div class="nav-container">
+      <button class="nav-btn active" data-view="overview" id="nav-btn-overview">
+        <span class="nav-icon">&block;</span> Overview (KPI Summary)
+      </button>
+      <button class="nav-btn" data-view="search" id="nav-btn-search">
+        <span class="nav-icon">&telrec;</span> Exposure Search
+      </button>
+      <button class="nav-btn" data-view="sources" id="nav-btn-sources">
+        <span class="nav-icon">&infin;</span> Source Register
+      </button>
+      <button class="nav-btn" data-view="evidence" id="nav-btn-evidence">
+        <span class="nav-icon">&equiv;</span> Evidence Registry
+      </button>
+      <button class="nav-btn" data-view="threat" id="nav-btn-threat">
+        <span class="nav-icon">&odot;</span> Threat &amp; Impact
+      </button>
+      <button class="nav-btn" data-view="response" id="nav-btn-response">
+        <span class="nav-icon">&malt;</span> Recommended Response
+      </button>
+      <button class="nav-btn" data-view="briefing" id="nav-btn-briefing">
+        <span class="nav-icon">&sect;</span> Print Briefing
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="app-main">
+    
+    <!-- Legal Gate Status Alert Banner -->
+    <div class="legal-banner" id="legal-banner">
+      <div class="legal-badge">&check; LEGAL EXPORT GATE ACTIVE</div>
+      <div class="legal-text">
+        Briefing dissemination and CSV/JSON export are governed by strict verification authorization (<code>legal_gate_ok === true</code>).
+        All citizen PII, credentials, and sensitive authentications are strictly redacted.
+      </div>
+    </div>
+
+    <!-- VIEW 1: OVERVIEW (KPI EXPOSURE SUMMARY) -->
+    <section id="view-overview" class="view-section active">
+      <div class="section-header">
+        <div>
+          <h2>45 Key Point Installations (KPI) — National Exposure Inventory</h2>
+          <p class="section-desc">Comprehensive status ledger across all 45 designated Critical Information Infrastructures of Bangladesh.</p>
+        </div>
+        <div class="quick-stats-row">
+          <div class="stat-card">
+            <span class="stat-num" id="stat-total-kpis">45</span>
+            <span class="stat-label">National KPIs</span>
+          </div>
+          <div class="stat-card stat-alert">
+            <span class="stat-num" id="stat-kpis-with-claims">23</span>
+            <span class="stat-label">KPIs with Documented Claims</span>
+          </div>
+          <div class="stat-card stat-neutral">
+            <span class="stat-num" id="stat-kpis-unassessed">22</span>
+            <span class="stat-label">No Public Claim Located</span>
+          </div>
+          <div class="stat-card stat-warning">
+            <span class="stat-num" id="stat-total-claims">68</span>
+            <span class="stat-label">Total Documented Claims</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-num" id="stat-total-evidence">40</span>
+            <span class="stat-label">Evidence Artifacts</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Overview Filter Bar -->
+      <div class="filter-bar">
+        <div class="search-input-wrapper">
+          <input type="text" id="kpi-search-input" class="text-input" placeholder="Search KPI name, ID, sector, or keyword..." aria-label="Search KPIs">
+          <button class="clear-btn" id="kpi-clear-btn" title="Clear search">&times;</button>
+        </div>
+        <div class="filter-group">
+          <label for="kpi-sector-select">Sector:</label>
+          <select id="kpi-sector-select" class="select-input">
+            <option value="ALL">All Sectors</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="kpi-status-select">Status:</label>
+          <select id="kpi-status-select" class="select-input">
+            <option value="ALL">All Statuses</option>
+            <option value="EXPOSED">Exposures Documented</option>
+            <option value="UNASSESSED">No Public Claim Located</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- KPI Table -->
+      <div class="table-container">
+        <table class="data-table" id="kpi-table">
+          <thead>
+            <tr>
+              <th data-sort="kpi_id">KPI ID &uarr;&darr;</th>
+              <th data-sort="kpi_name">Installation / Entity Name &uarr;&darr;</th>
+              <th data-sort="sector">Sector &uarr;&darr;</th>
+              <th data-sort="criticality">Criticality &uarr;&darr;</th>
+              <th data-sort="claim_count">Claims Count &uarr;&darr;</th>
+              <th data-sort="highest_threat">Highest Threat Level &uarr;&darr;</th>
+              <th data-sort="verification_status">Verification Status &uarr;&darr;</th>
+              <th data-sort="latest_source_date">Latest Recorded Date &uarr;&darr;</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="kpi-table-body">
+            <!-- Rendered dynamically -->
+          </tbody>
+        </table>
+      </div>
+      <div class="table-footer">
+        <span id="kpi-table-count">Showing 45 of 45 Key Point Installations</span>
+      </div>
+    </section>
+
+    <!-- VIEW 2: EXPOSURE SEARCH -->
+    <section id="view-search" class="view-section">
+      <div class="section-header">
+        <div>
+          <h2>Exposure Search &amp; Claim Dossier</h2>
+          <p class="section-desc">Search, filter, and audit all 68 lawfully documented exposure incidents across critical infrastructure and supply chain targets.</p>
+        </div>
+        <div class="export-actions">
+          <button class="btn btn-secondary" id="export-csv-btn">&darr; Export Filtered CSV</button>
+          <button class="btn btn-secondary" id="export-json-btn">&darr; Export Filtered JSON</button>
+        </div>
+      </div>
+
+      <!-- Search Controls -->
+      <div class="search-panel">
+        <div class="search-row-primary">
+          <div class="search-input-wrapper flex-grow">
+            <input type="text" id="claim-search-input" class="text-input" placeholder="Search across target entities, claim IDs, source platforms, evidence IDs, breach summaries..." aria-label="Search Exposure Claims">
+            <button class="clear-btn" id="claim-clear-btn" title="Clear search">&times;</button>
+          </div>
+          <button class="btn btn-primary" id="claim-reset-all-btn">Reset All Filters</button>
+        </div>
+
+        <div class="search-filters-grid">
+          <div class="filter-item">
+            <label for="claim-filter-sector">Sector:</label>
+            <select id="claim-filter-sector" class="select-input">
+              <option value="ALL">All Sectors</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label for="claim-filter-threat">Threat Level:</label>
+            <select id="claim-filter-threat" class="select-input">
+              <option value="ALL">All Threat Levels</option>
+              <option value="Critical">Critical</option>
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label for="claim-filter-verif">Verification Status:</label>
+            <select id="claim-filter-verif" class="select-input">
+              <option value="ALL">All Verification Statuses</option>
+              <option value="Verified finding">Verified finding</option>
+              <option value="Corroborated claim">Corroborated claim</option>
+              <option value="Unverified claim">Unverified claim</option>
+              <option value="Reported allegation">Reported allegation</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label for="claim-filter-category">Data Category:</label>
+            <select id="claim-filter-category" class="select-input">
+              <option value="ALL">All Categories</option>
+              <option value="Ransomware">Ransomware Extortion</option>
+              <option value="Breached">Breached Database</option>
+              <option value="API">API Exposure</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label for="claim-page-size">Page Size:</label>
+            <select id="claim-page-size" class="select-input">
+              <option value="15">15 per page</option>
+              <option value="25" selected>25 per page</option>
+              <option value="50">50 per page</option>
+              <option value="ALL">All Records</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Claims Table -->
+      <div class="table-container">
+        <table class="data-table" id="claims-table">
+          <thead>
+            <tr>
+              <th data-sort="claim_id">Claim ID &uarr;&darr;</th>
+              <th data-sort="kpi_name">Target Entity / KPI &uarr;&darr;</th>
+              <th data-sort="sector">Sector &uarr;&darr;</th>
+              <th data-sort="threat_level">Threat Level &uarr;&darr;</th>
+              <th data-sort="verification_status">Verification &uarr;&darr;</th>
+              <th data-sort="source_name">Platform / Source &uarr;&darr;</th>
+              <th data-sort="source_date">Incident Date &uarr;&darr;</th>
+              <th>Evidence Reference</th>
+              <th>Summary (Redacted)</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="claims-table-body">
+            <!-- Rendered dynamically -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination Controls -->
+      <div class="pagination-bar">
+        <span id="claims-table-count">Showing 0 of 0 records</span>
+        <div class="pagination-buttons" id="pagination-buttons">
+          <!-- Buttons rendered dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 3: RESEARCH SOURCE REGISTER -->
+    <section id="view-sources" class="view-section">
+      <div class="section-header">
+        <div>
+          <h2>Research Source Register</h2>
+          <p class="section-desc">Passive register of research references, underground directories, news reports, and darknet leak blogs. <em>All onion addresses are recorded passively; zero network requests are initiated.</em></p>
+        </div>
+        <div class="filter-group">
+          <input type="text" id="source-search-input" class="text-input" placeholder="Search source name, category, or notes..." aria-label="Search Sources">
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table class="data-table" id="sources-table">
+          <thead>
+            <tr>
+              <th>Source ID</th>
+              <th>Source Name / Label</th>
+              <th>Category</th>
+              <th>Passive URL / Reference</th>
+              <th>Network Type</th>
+              <th>Verification Assessment</th>
+              <th>Analytical Notes</th>
+            </tr>
+          </thead>
+          <tbody id="sources-table-body">
+            <!-- Rendered dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- VIEW 4: EVIDENCE REGISTRY -->
+    <section id="view-evidence" class="view-section">
+      <div class="section-header">
+        <div>
+          <h2>Evidence Registry &amp; Cryptographic Hashes</h2>
+          <p class="section-desc">Metadata-only ledger of 40 visual screenshot artifacts extracted from team research archives, with computed SHA-256 digests and OCR previews.</p>
+        </div>
+        <div class="filter-group">
+          <input type="text" id="evidence-search-input" class="text-input" placeholder="Search evidence ID, document, OCR text, or hash..." aria-label="Search Evidence">
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table class="data-table" id="evidence-table">
+          <thead>
+            <tr>
+              <th>Evidence ID</th>
+              <th>Screenshot Artifact</th>
+              <th>Originating Research Document</th>
+              <th>SHA-256 Digest</th>
+              <th>Dimensions</th>
+              <th>Size</th>
+              <th>Verification Status</th>
+              <th>OCR Preview (Redacted)</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="evidence-table-body">
+            <!-- Rendered dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- VIEW 5: THREAT & IMPACT -->
+    <section id="view-threat" class="view-section">
+      <div class="section-header">
+        <div>
+          <h2>National Cyber Threat &amp; Impact Assessment Matrix</h2>
+          <p class="section-desc">Distribution of threat levels across national critical infrastructure sectors based on verified leak severity and operational risk.</p>
+        </div>
+      </div>
+
+      <div class="threat-methodology-card">
+        <h3>Threat Assessment Methodology &amp; Classification Standards</h3>
+        <p>Assessments are defensibly derived from verified impact on confidentiality, integrity, and availability:</p>
+        <div class="methodology-grid">
+          <div class="method-item badge-critical">
+            <strong>CRITICAL THREAT</strong>
+            <p>Confirmed ransomware encryption or multi-million record citizen PII exfiltration affecting primary national operations, core banking, or intelligence registries.</p>
+          </div>
+          <div class="method-item badge-high">
+            <strong>HIGH THREAT</strong>
+            <p>Significant internal database compromise, verified administrative credentials leaked, or extortion listings with active countdowns on designated KPI entities.</p>
+          </div>
+          <div class="method-item badge-medium">
+            <strong>MEDIUM THREAT</strong>
+            <p>Targeted exposure of commercial supply-chain partners, secondary web portals, or uncorroborated darknet forum database sales.</p>
+          </div>
+          <div class="method-item badge-low">
+            <strong>LOW THREAT</strong>
+            <p>Defacements, legacy forum claims with low credibility, or minor unauthenticated metadata disclosures.</p>
+          </div>
+          <div class="method-item badge-unassessed">
+            <strong>NOT ASSESSED</strong>
+            <p>No public claim located in the collected research as of 2026-10-26. <em>Explicitly does not imply verified security posture.</em></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sector Threat Breakdown Grid -->
+      <h3 style="margin-top: 1.5rem; margin-bottom: 0.75rem;">Sector Exposure &amp; Impact Ledger</h3>
+      <div id="threat-sector-grid" class="threat-sector-grid">
+        <!-- Rendered dynamically -->
+      </div>
+    </section>
+
+    <!-- VIEW 6: RECOMMENDED RESPONSE -->
+    <section id="view-response" class="view-section">
+      <div class="section-header">
+        <div>
+          <h2>Defensive Response Framework &amp; Action Matrix</h2>
+          <p class="section-desc">Recommended mitigation and institutional response actions mapped by designated operational owners.</p>
+        </div>
+        <div class="filter-group">
+          <label for="response-owner-filter">Operational Owner:</label>
+          <select id="response-owner-filter" class="select-input">
+            <option value="ALL">All Owners (LEA, CERT, Operator)</option>
+            <option value="CERT">CERT (BGD e-GOV CIRT / National Response)</option>
+            <option value="LEA">LEA (Law Enforcement Cyber Units)</option>
+            <option value="operator">Infrastructure Operators</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table class="data-table" id="response-table">
+          <thead>
+            <tr>
+              <th>Target Entity / KPI</th>
+              <th>Sector</th>
+              <th>Threat Level</th>
+              <th>Suggested Owner</th>
+              <th>Recommended Defensive Protocol</th>
+              <th>Verification Status</th>
+            </tr>
+          </thead>
+          <tbody id="response-table-body">
+            <!-- Rendered dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- VIEW 7: PRINT BRIEFING -->
+    <section id="view-briefing" class="view-section">
+      <div class="section-header no-print">
+        <div>
+          <h2>Official Cyber Threat Intelligence Briefing (A4 Print-Ready)</h2>
+          <p class="section-desc">Generate an executive briefing report for law enforcement, CERT operators, and institutional evaluators.</p>
+        </div>
+        <button class="btn btn-primary" id="print-trigger-btn" onclick="window.print()">
+          Print / Save as PDF
+        </button>
+      </div>
+
+      <!-- Printable Report Container -->
+      <div class="print-dossier" id="printable-briefing">
+        <div class="dossier-header">
+          <div class="dossier-letterhead">
+            <img class="brand-logo" src="tnx-logo.png" alt="Team NullX" width="64" height="64">
+            <div>
+              <h1>TEAM NULLX | PROJECT DARK HUNT</h1>
+              <h2>PUBLIC-SOURCE CYBER-THREAT INTELLIGENCE BRIEFING</h2>
+              <p class="dossier-subhead">Team NullX &bull; Public-source exposure briefing</p>
+            </div>
+          </div>
+          <div class="dossier-meta-box">
+            <table class="meta-box-table">
+              <tr><td><strong>Document Classification:</strong></td><td>RESTRICTED RESEARCH BRIEFING</td></tr>
+              <tr><td><strong>Date of Briefing:</strong></td><td>26 October 2026</td></tr>
+              <tr><td><strong>Project Deadline:</strong></td><td>31 October 2026</td></tr>
+              <tr><td><strong>Project Lead &amp; Planning:</strong></td><td>Rahat Sahriar Rafi</td></tr>
+              <tr><td><strong>Website Development:</strong></td><td>Md. Tanjim Islam</td></tr>
+              <tr><td><strong>Evidence &amp; Verification:</strong></td><td>MD Rakib Hasan Apon</td></tr>
+              <tr><td><strong>Legal Export Gate:</strong></td><td>AUTHORIZED (<code>legal_gate_ok === true</code>)</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <hr class="dossier-divider">
+
+        <section class="dossier-chapter">
+          <h3>1. Executive Summary</h3>
+          <p>
+            Project Dark Hunt represents a systematic, lawfully compiled public-source cyber-threat intelligence (OSINT) inventory
+            evaluating documented exposures and breach allegations concerning Bangladesh's 45 designated Key Point Installations (KPIs)
+            and critical supply chain entities. All information is derived strictly from public-source disclosures, threat actor leak
+            portals, darknet market listings, and investigative technical audits compiled through October 2026.
+          </p>
+        </section>
+
+        <section class="dossier-chapter">
+          <h3>2. Scope &amp; Legal Disclaimers</h3>
+          <p>
+            This dossier operates under strict passive observation guidelines. No automated darknet web crawling, active vulnerability
+            scanning, authentication bypassing, or live threat-actor engagement was performed. The absence of a public claim for any
+            particular institution does not certify that entity as secure; it is recorded explicitly as <em>"No public claim located (as of 2026-10-26)"</em>.
+            All citizen PII, credentials, and sensitive authentications have been redacted prior to report compilation.
+          </p>
+        </section>
+
+        <section class="dossier-chapter">
+          <h3>3. Key Point Installation Exposure Coverage</h3>
+          <div id="briefing-kpi-summary">
+            <!-- Dynamically populated -->
+          </div>
+        </section>
+
+        <section class="dossier-chapter page-break">
+          <h3>4. Significant Documented Incidents (Top Priority)</h3>
+          <div id="briefing-major-incidents">
+            <!-- Dynamically populated -->
+          </div>
+        </section>
+
+        <section class="dossier-chapter">
+          <h3>5. Strategic Defensive Recommendations</h3>
+          <div id="briefing-recommendations">
+            <!-- Dynamically populated -->
+          </div>
+        </section>
+
+        <section class="dossier-chapter page-break">
+          <h3>6. Evidence Register &amp; Cryptographic SHA-256 Integrity Hashes</h3>
+          <div id="briefing-evidence-list">
+            <!-- Dynamically populated -->
+          </div>
+        </section>
+
+        <div class="dossier-footer">
+          <p>&copy; 2026 Team NullX &bull; Public-Source Exposure Briefing</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Detail Modal / Drawer -->
+  <div class="modal-overlay" id="detail-modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-title">Record Details</h3>
+        <button class="modal-close-btn" id="modal-close-btn" title="Close details">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-content">
+        <!-- Rendered dynamically -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="modal-dismiss-btn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Offline Data Script -->
+  <script src="data.js"></script>
+  <!-- Main Application Script -->
+  <script src="app.js"></script>
+</body>
+</html>
