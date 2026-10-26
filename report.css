@@ -118,13 +118,25 @@
   line-height: 1.65;
 }
 
-.dossier-table {
+/* Table Container with Horizontal Scroll Isolation */
+.dossier-table-container {
   width: 100%;
-  border-collapse: collapse;
-  font-size: 0.8rem;
+  max-width: 100%;
+  overflow-x: auto;
   margin-top: 0.75rem;
   margin-bottom: 1.25rem;
+  box-sizing: border-box;
+  -webkit-overflow-scrolling: touch;
+}
+
+.dossier-table {
+  width: 100%;
+  max-width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  margin: 0;
   table-layout: fixed;
+  box-sizing: border-box;
 }
 
 .dossier-table th {
@@ -136,6 +148,7 @@
   text-align: left;
   box-sizing: border-box;
   word-break: break-word;
+  overflow-wrap: anywhere;
   vertical-align: middle;
 }
 
@@ -146,7 +159,7 @@
   vertical-align: middle;
   box-sizing: border-box;
   word-break: break-word;
-  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
 }
 
 .dossier-table tr:nth-child(even) {
@@ -155,10 +168,18 @@
 
 .onion-badge {
   display: block;
-  font-size: 0.78rem;
-  color: #102028;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.74rem;
+  background-color: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+  padding: 3px 6px;
+  border-radius: 4px;
   word-break: break-all;
-  margin-top: 0.2rem;
+  overflow-wrap: anywhere;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin-top: 0.25rem;
   line-height: 1.35;
 }
 
@@ -167,10 +188,12 @@
   font-size: 0.72rem;
   color: #475569;
   word-break: break-all;
+  overflow-wrap: anywhere;
+  max-width: 100%;
   margin-top: 3px;
 }
 
-/* Badge styling inside print dossier */
+/* Badge styling inside print dossier - never overflow cell */
 .print-dossier .badge {
   display: inline-block;
   font-size: 0.72rem;
@@ -178,7 +201,12 @@
   padding: 2px 7px;
   border-radius: 4px;
   text-align: center;
-  white-space: nowrap;
+  max-width: 100%;
+  box-sizing: border-box;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: break-word;
+  line-height: 1.25;
 }
 
 .print-dossier .badge-verified {

@@ -499,18 +499,19 @@
 
     // 1. KPI summary table
     let kpiHtml = `
-      <table class="dossier-table" style="table-layout: fixed; width: 100%;">
-        <thead>
-          <tr>
-            <th style="width: 11%;">KPI ID</th>
-            <th style="width: 27%;">Designated Installation / Entity</th>
-            <th style="width: 17%;">Sector</th>
-            <th style="width: 17%;">Documented Claims</th>
-            <th style="width: 12%; text-align: center;">Threat Level</th>
-            <th style="width: 16%; text-align: center;">Verification Status</th>
-          </tr>
-        </thead>
-        <tbody>
+      <div class="dossier-table-container">
+        <table class="dossier-table" style="table-layout: fixed; width: 100%;">
+          <thead>
+            <tr>
+              <th style="width: 11%;">KPI ID</th>
+              <th style="width: 27%;">Designated Installation / Entity</th>
+              <th style="width: 17%;">Sector</th>
+              <th style="width: 17%;">Documented Claims</th>
+              <th style="width: 12%; text-align: center;">Threat Level</th>
+              <th style="width: 16%; text-align: center;">Verification Status</th>
+            </tr>
+          </thead>
+          <tbody>
     `;
     DATA.kpis.forEach(k => {
       const hasOnion = onionKpiIds.has(k.kpi_id);
@@ -531,31 +532,32 @@
             <span class="badge ${getThreatBadgeClass(k.highest_threat)}">${escapeHtml(k.highest_threat)}</span>
           </td>
           <td style="text-align: center; vertical-align: middle;">
-            <span class="badge ${getVerifBadgeClass(k.verification_status)}" style="white-space: nowrap; font-size: 0.72rem; padding: 2px 7px;">
+            <span class="badge ${getVerifBadgeClass(k.verification_status)}">
               ${escapeHtml(k.verification_status)}
             </span>
           </td>
         </tr>
       `;
     });
-    kpiHtml += `</tbody></table>`;
+    kpiHtml += `</tbody></table></div>`;
     briefingKpiSummary.innerHTML = kpiHtml;
 
     // 2. Major incidents (Critical / High threat) with available Source / .onion URLs
     const majorClaims = DATA.inventory.filter(c => c.threat_level === 'Critical' || c.threat_level === 'High').slice(0, 15);
     let majHtml = `
-      <table class="dossier-table" style="table-layout: fixed; width: 100%;">
-        <thead>
-          <tr>
-            <th style="width: 9%;">Claim ID</th>
-            <th style="width: 18%;">Target Entity</th>
-            <th style="width: 10%; text-align: center;">Threat Level</th>
-            <th style="width: 31%;">Platform / Leak Source &amp; URL</th>
-            <th style="width: 11%; text-align: center;">Incident Date</th>
-            <th style="width: 21%;">Verified Summary</th>
-          </tr>
-        </thead>
-        <tbody>
+      <div class="dossier-table-container">
+        <table class="dossier-table" style="table-layout: fixed; width: 100%;">
+          <thead>
+            <tr>
+              <th style="width: 9%;">Claim ID</th>
+              <th style="width: 18%;">Target Entity</th>
+              <th style="width: 10%; text-align: center;">Threat Level</th>
+              <th style="width: 31%;">Platform / Leak Source &amp; URL</th>
+              <th style="width: 11%; text-align: center;">Incident Date</th>
+              <th style="width: 21%;">Verified Summary</th>
+            </tr>
+          </thead>
+          <tbody>
     `;
     majorClaims.forEach(c => {
       let sourceDisplay = `<div><strong>${escapeHtml(c.source_name)}</strong></div>`;
@@ -580,7 +582,7 @@
         </tr>
       `;
     });
-    majHtml += `</tbody></table>`;
+    majHtml += `</tbody></table></div>`;
     briefingMajorIncidents.innerHTML = majHtml;
 
     // 3. Dedicated Dark Web (.onion) Threat Sources & Leak Portal Register
@@ -595,18 +597,19 @@
         <p style="font-size: 0.85rem; color: #475569; margin-bottom: 0.6rem;">
           Exposures identified on Tor hidden service ransomware blogs, breach forums, and extortion sites directly targeting Bangladeshi public and private infrastructure.
         </p>
-        <table class="dossier-table" style="table-layout: fixed; width: 100%;">
-          <thead>
-            <tr>
-              <th style="width: 9%;">Claim ID</th>
-              <th style="width: 18%;">Target Entity &amp; Sector</th>
-              <th style="width: 10%; text-align: center;">Threat Level</th>
-              <th style="width: 35%;">Dark Web (.onion) Link / Leak Portal</th>
-              <th style="width: 11%; text-align: center;">Incident Date</th>
-              <th style="width: 17%; text-align: center;">Evidence Ref</th>
-            </tr>
-          </thead>
-          <tbody>
+        <div class="dossier-table-container">
+          <table class="dossier-table" style="table-layout: fixed; width: 100%;">
+            <thead>
+              <tr>
+                <th style="width: 10%;">Claim ID</th>
+                <th style="width: 19%;">Target Entity &amp; Sector</th>
+                <th style="width: 11%; text-align: center;">Threat Level</th>
+                <th style="width: 32%;">Dark Web (.onion) Link / Leak Portal</th>
+                <th style="width: 12%; text-align: center;">Incident Date</th>
+                <th style="width: 16%; text-align: center;">Evidence Ref</th>
+              </tr>
+            </thead>
+            <tbody>
       `;
 
       onionClaims.forEach(c => {
@@ -635,7 +638,7 @@
           </tr>
         `;
       });
-      onionHtml += `</tbody></table>`;
+      onionHtml += `</tbody></table></div>`;
 
       onionHtml += `
         <h4 style="font-size: 0.95rem; font-weight: 700; color: #0f172a; margin-top: 1.5rem; margin-bottom: 0.5rem;">
@@ -644,17 +647,18 @@
         <p style="font-size: 0.85rem; color: #475569; margin-bottom: 0.6rem;">
           Public dark web directories and indexes audited passively for breach mentions, ransomware blogs, and paste sites.
         </p>
-        <table class="dossier-table" style="table-layout: fixed; width: 100%;">
-          <thead>
-            <tr>
-              <th style="width: 10%;">Source ID</th>
-              <th style="width: 20%;">Platform / Directory Name</th>
-              <th style="width: 16%;">Category</th>
-              <th style="width: 36%;">Tor Hidden Service (.onion) Address</th>
-              <th style="width: 18%; text-align: center;">Verification Status</th>
-            </tr>
-          </thead>
-          <tbody>
+        <div class="dossier-table-container">
+          <table class="dossier-table" style="table-layout: fixed; width: 100%;">
+            <thead>
+              <tr>
+                <th style="width: 11%;">Source ID</th>
+                <th style="width: 21%;">Platform / Directory Name</th>
+                <th style="width: 16%;">Category</th>
+                <th style="width: 32%;">Tor Hidden Service (.onion) Address</th>
+                <th style="width: 20%; text-align: center;">Verification Status</th>
+              </tr>
+            </thead>
+            <tbody>
       `;
 
       onionSources.forEach(s => {
@@ -670,54 +674,57 @@
           </tr>
         `;
       });
-      onionHtml += `</tbody></table>`;
+      onionHtml += `</tbody></table></div>`;
 
       briefingOnionRegister.innerHTML = onionHtml;
     }
 
     // 4. Strategic Recommendations
     let recHtml = `
-      <table class="dossier-table" style="table-layout: fixed; width: 100%;">
-        <thead>
-          <tr>
-            <th style="width: 25%;">Target Category</th>
-            <th style="width: 22%;">Designated Responder</th>
-            <th style="width: 53%;">Prescribed Defensive Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>Critical Infrastructure (KPI Enclaves)</strong></td>
-            <td><strong>CERT (BGD e-GOV CIRT)</strong></td>
-            <td>Immediate isolation of compromised Exchange/API integration gateways. Perform domain-wide password revocation, revoke inactive API tokens, enforce MFA on all administrative consoles.</td>
-          </tr>
-          <tr>
-            <td><strong>State Defense &amp; Law Enforcement</strong></td>
-            <td><strong>LEA &amp; National Security</strong></td>
-            <td>Active forensic review of exposed perimeter services. Threat hunting for RemotePE, Babuk, and Medusa implant indicators. Coordinate lawful evidence custody.</td>
-          </tr>
-          <tr>
-            <td><strong>Commercial Sector &amp; Supply Chain</strong></td>
-            <td><strong>Infrastructure Operators</strong></td>
-            <td>Notification to affected account holders regarding breached databases. Patch exposed Apache/Nginx web instances and deploy Web Application Firewalls (WAF).</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="dossier-table-container">
+        <table class="dossier-table" style="table-layout: fixed; width: 100%;">
+          <thead>
+            <tr>
+              <th style="width: 25%;">Target Category</th>
+              <th style="width: 22%;">Designated Responder</th>
+              <th style="width: 53%;">Prescribed Defensive Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Critical Infrastructure (KPI Enclaves)</strong></td>
+              <td><strong>CERT (BGD e-GOV CIRT)</strong></td>
+              <td>Immediate isolation of compromised Exchange/API integration gateways. Perform domain-wide password revocation, revoke inactive API tokens, enforce MFA on all administrative consoles.</td>
+            </tr>
+            <tr>
+              <td><strong>State Defense &amp; Law Enforcement</strong></td>
+              <td><strong>LEA &amp; National Security</strong></td>
+              <td>Active forensic review of exposed perimeter services. Threat hunting for RemotePE, Babuk, and Medusa implant indicators. Coordinate lawful evidence custody.</td>
+            </tr>
+            <tr>
+              <td><strong>Commercial Sector &amp; Supply Chain</strong></td>
+              <td><strong>Infrastructure Operators</strong></td>
+              <td>Notification to affected account holders regarding breached databases. Patch exposed Apache/Nginx web instances and deploy Web Application Firewalls (WAF).</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     `;
     briefingRecommendations.innerHTML = recHtml;
 
     // 5. Evidence hashes & integrity register
     let evHtml = `
-      <table class="dossier-table" style="table-layout: fixed; width: 100%;">
-        <thead>
-          <tr>
-            <th style="width: 14%;">Evidence ID</th>
-            <th style="width: 32%;">Originating Research Document</th>
-            <th style="width: 34%;">Artifact SHA-256 Digest</th>
-            <th style="width: 20%; text-align: center;">Verification Status</th>
-          </tr>
-        </thead>
-        <tbody>
+      <div class="dossier-table-container">
+        <table class="dossier-table" style="table-layout: fixed; width: 100%;">
+          <thead>
+            <tr>
+              <th style="width: 14%;">Evidence ID</th>
+              <th style="width: 32%;">Originating Research Document</th>
+              <th style="width: 34%;">Artifact SHA-256 Digest</th>
+              <th style="width: 20%; text-align: center;">Verification Status</th>
+            </tr>
+          </thead>
+          <tbody>
     `;
     DATA.evidence.forEach(e => {
       evHtml += `
@@ -728,14 +735,14 @@
             ${escapeHtml(e.sha256)}
           </td>
           <td style="text-align: center; vertical-align: middle;">
-            <span class="badge ${getVerifBadgeClass(e.verification_status)}" style="display: inline-block; white-space: nowrap; font-size: 0.72rem; padding: 3px 8px;">
+            <span class="badge ${getVerifBadgeClass(e.verification_status)}">
               ${escapeHtml(e.verification_status)}
             </span>
           </td>
         </tr>
       `;
     });
-    evHtml += `</tbody></table>`;
+    evHtml += `</tbody></table></div>`;
     briefingEvidenceList.innerHTML = evHtml;
   }
 
