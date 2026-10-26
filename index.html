@@ -101,15 +101,15 @@
         <table class="data-table" id="kpi-table">
           <thead>
             <tr>
-              <th data-sort="kpi_id" style="width: 8%;">KPI ID</th>
-              <th data-sort="kpi_name" style="width: 22%;">Installation / Entity Name</th>
-              <th data-sort="sector" style="width: 14%;">Sector</th>
-              <th data-sort="criticality" style="width: 10%;">Criticality</th>
+              <th data-sort="kpi_id" style="width: 7%;">KPI ID</th>
+              <th data-sort="kpi_name" style="width: 21%;">Installation / Entity Name</th>
+              <th data-sort="sector" style="width: 13%;">Sector</th>
+              <th data-sort="criticality" style="width: 9%;">Criticality</th>
               <th data-sort="claim_count" style="width: 8%;">Claims Count</th>
-              <th data-sort="highest_threat" style="width: 12%;">Highest Threat Level</th>
+              <th data-sort="highest_threat" style="width: 11%;">Highest Threat Level</th>
               <th data-sort="verification_status" style="width: 12%;">Verification Status</th>
-              <th data-sort="latest_source_date" style="width: 8%;">Latest Recorded Date</th>
-              <th style="width: 6%;">Action</th>
+              <th data-sort="latest_source_date" style="width: 9%;">Latest Recorded Date</th>
+              <th style="width: 10%; text-align: center;">Action</th>
             </tr>
           </thead>
           <tbody id="kpi-table-body">
@@ -189,17 +189,17 @@
         <table class="data-table" id="claims-table">
           <thead>
             <tr>
-              <th data-sort="claim_id" style="width: 6%;">Claim ID</th>
-              <th data-sort="kpi_name" style="width: 14%;">Target Entity / KPI</th>
+              <th data-sort="claim_id" style="width: 5%;">Claim ID</th>
+              <th data-sort="kpi_name" style="width: 13%;">Target Entity / KPI</th>
               <th data-sort="sector" style="width: 9%;">Sector</th>
-              <th data-sort="threat_level" style="width: 7%;">Threat Level</th>
+              <th data-sort="threat_level" style="width: 6%;">Threat Level</th>
               <th data-sort="verification_status" style="width: 8%;">Verification</th>
-              <th data-sort="source_name" style="width: 11%;">Platform / Source</th>
-              <th data-sort="onion_link_verified" style="width: 13%;">Onion link verified</th>
+              <th data-sort="source_name" style="width: 10%;">Platform / Source</th>
+              <th data-sort="onion_link_verified" style="width: 16%;">Onion link verified</th>
               <th data-sort="source_date" style="width: 7%;">Incident Date</th>
-              <th style="width: 7%;">Evidence Ref</th>
-              <th style="width: 13%;">Summary (Redacted)</th>
-              <th style="width: 5%;">Action</th>
+              <th style="width: 6%;">Evidence Ref</th>
+              <th style="width: 15%;">Summary (Redacted)</th>
+              <th style="width: 5%; text-align: center;">Action</th>
             </tr>
           </thead>
           <tbody id="claims-table-body">
@@ -251,11 +251,11 @@
     <section id="view-evidence" class="view-section">
       <div class="section-header">
         <div>
-          <h2>Evidence Registry &amp; Cryptographic Hashes</h2>
-          <p class="section-desc">Metadata-only ledger of 40 visual screenshot artifacts extracted from team research archives, with computed SHA-256 digests and OCR previews.</p>
+          <h2>Evidence Registry</h2>
+          <p class="section-desc">Metadata-only ledger of 40 visual screenshot artifacts extracted from team research archives with OCR previews.</p>
         </div>
         <div class="filter-group">
-          <input type="text" id="evidence-search-input" class="text-input" placeholder="Search evidence ID, document, OCR text, or hash..." aria-label="Search Evidence">
+          <input type="text" id="evidence-search-input" class="text-input" placeholder="Search evidence ID, document, or OCR text..." aria-label="Search Evidence">
         </div>
       </div>
 
@@ -263,15 +263,14 @@
         <table class="data-table" id="evidence-table">
           <thead>
             <tr>
-              <th style="width: 8%;">Evidence ID</th>
-              <th style="width: 10%;">Screenshot Artifact</th>
+              <th style="width: 7%;">Evidence ID</th>
+              <th style="width: 8%;">Screenshot Artifact</th>
               <th style="width: 18%;">Originating Research Document</th>
-              <th style="width: 14%;">SHA-256 Digest</th>
-              <th style="width: 8%;">Dimensions</th>
-              <th style="width: 6%;">Size</th>
-              <th style="width: 12%;">Verification Status</th>
-              <th style="width: 18%;">OCR Preview (Redacted)</th>
-              <th style="width: 6%;">Action</th>
+              <th style="width: 10%;">Dimensions</th>
+              <th style="width: 7%;">Size</th>
+              <th style="width: 11%;">Verification Status</th>
+              <th style="width: 29%;">OCR Preview (Redacted)</th>
+              <th style="width: 10%; text-align: center;">Action</th>
             </tr>
           </thead>
           <tbody id="evidence-table-body">

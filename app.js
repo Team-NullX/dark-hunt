@@ -232,6 +232,16 @@
         ? `<span class="badge badge-high">${k.claim_count} Claim(s)</span>`
         : `<span class="badge badge-unassessed">0 Claims</span>`;
 
+      const isUnassessed = (k.claim_count === 0 || (k.latest_source_date && k.latest_source_date.includes('No public claim')));
+
+      const dateDisplay = isUnassessed
+        ? `<span class="text-muted" title="${escapeHtml(k.latest_source_date)}">—</span>`
+        : escapeHtml(k.latest_source_date);
+
+      const verifDisplay = (isUnassessed && k.verification_status && k.verification_status.includes('No public claim'))
+        ? `<span class="badge badge-unassessed" title="${escapeHtml(k.verification_status)}">No Claim Located</span>`
+        : `<span class="badge ${getVerifBadgeClass(k.verification_status)}">${escapeHtml(k.verification_status)}</span>`;
+
       tr.innerHTML = `
         <td class="mono-cell"><strong>${escapeHtml(k.kpi_id)}</strong></td>
         <td><strong>${escapeHtml(k.kpi_name)}</strong></td>
@@ -239,8 +249,8 @@
         <td><span class="badge ${k.criticality === 'Critical' ? 'badge-critical' : 'badge-high'}">${escapeHtml(k.criticality)}</span></td>
         <td>${claimBadge}</td>
         <td><span class="badge ${getThreatBadgeClass(k.highest_threat)}">${escapeHtml(k.highest_threat)}</span></td>
-        <td><span class="badge ${getVerifBadgeClass(k.verification_status)}">${escapeHtml(k.verification_status)}</span></td>
-        <td class="mono-cell">${escapeHtml(k.latest_source_date)}</td>
+        <td>${verifDisplay}</td>
+        <td class="mono-cell" style="white-space: nowrap;">${dateDisplay}</td>
         <td><button class="btn btn-secondary btn-sm" data-kpi-id="${escapeHtml(k.kpi_id)}">View Profile</button></td>
       `;
       kpiTableBody.appendChild(tr);
@@ -312,6 +322,9 @@
       pageRecords.forEach(c => {
         const tr = document.createElement('tr');
         const onion = onionLinkState(c.source_url_or_ref);
+        const onionHtml = onion.host
+          ? `<span class="badge ${onion.badge}">${escapeHtml(onion.label)}:</span> <span class="onion-host" title="${escapeHtml(onion.host)}">${escapeHtml(onion.host)}</span>`
+          : `<span class="badge ${onion.badge}">${escapeHtml(onion.label)}</span>`;
         tr.innerHTML = `
           <td class="mono-cell"><strong>${escapeHtml(c.claim_id)}</strong></td>
           <td><strong>${escapeHtml(c.kpi_name)}</strong> <small style="color: #94a3b8;">(${escapeHtml(c.kpi_id)})</small></td>
@@ -319,11 +332,11 @@
           <td><span class="badge ${getThreatBadgeClass(c.threat_level)}">${escapeHtml(c.threat_level)}</span></td>
           <td><span class="badge ${getVerifBadgeClass(c.verification_status)}">${escapeHtml(c.verification_status)}</span></td>
           <td>${escapeHtml(c.source_name)}</td>
-          <td class="onion-cell"><span class="badge ${onion.badge}">${escapeHtml(onion.label)}</span>${onion.host ? `<span class="onion-host">${escapeHtml(onion.host)}</span>` : ''}</td>
+          <td class="onion-cell">${onionHtml}</td>
           <td class="mono-cell">${escapeHtml(c.source_date)}</td>
           <td class="mono-cell" style="font-size: 0.72rem;">${escapeHtml(c.evidence_ref)}</td>
           <td style="font-size: 0.76rem; line-height: 1.35;">${escapeHtml(c.summary_redacted.slice(0, 100))}...</td>
-          <td><button class="btn btn-secondary btn-sm" data-claim-id="${escapeHtml(c.claim_id)}">View</button></td>
+          <td style="text-align: center;"><button class="btn btn-secondary btn-sm" data-claim-id="${escapeHtml(c.claim_id)}">View</button></td>
         `;
         claimsTableBody.appendChild(tr);
       });
@@ -392,18 +405,13 @@
           <img src="${imgPath}" class="evidence-thumb" alt="${escapeHtml(e.evidence_id)}" data-evidence-id="${escapeHtml(e.evidence_id)}" title="Click to enlarge" loading="lazy">
         </td>
         <td>${escapeHtml(e.originating_document)}</td>
-        <td>
-          <span class="sha-text" title="${escapeHtml(e.sha256)} (Click to copy full hash)" data-copy="${escapeHtml(e.sha256)}">
-            ${escapeHtml(shortSha)}
-          </span>
-        </td>
         <td class="mono-cell">${escapeHtml(e.dimensions)}</td>
         <td class="mono-cell">${(e.file_size_bytes / 1024).toFixed(1)} KB</td>
         <td><span class="badge badge-verified">${escapeHtml(e.verification_status)}</span></td>
         <td>
           <div class="ocr-preview-box" title="Extracted OCR text (Click 'View Image' for full text)">${escapeHtml(e.ocr_preview || '[No OCR text available]')}</div>
         </td>
-        <td><button class="btn btn-secondary btn-sm" data-evidence-id="${escapeHtml(e.evidence_id)}">View Image</button></td>
+        <td style="text-align: center;"><button class="btn btn-secondary btn-sm" data-evidence-id="${escapeHtml(e.evidence_id)}">View Image</button></td>
       `;
       evidenceTableBody.appendChild(tr);
     });
@@ -871,10 +879,6 @@
         <div><div class="modal-field-label">Verification Status</div><div class="modal-field-val"><span class="badge badge-verified">${escapeHtml(ev.verification_status)}</span></div></div>
         <div><div class="modal-field-label">Originating Document</div><div class="modal-field-val">${escapeHtml(ev.originating_document)}</div></div>
         <div><div class="modal-field-label">Dimensions & Size</div><div class="modal-field-val">${escapeHtml(ev.dimensions)} &bull; ${(ev.file_size_bytes / 1024).toFixed(1)} KB</div></div>
-        <div class="modal-full-field">
-          <div class="modal-field-label">Artifact SHA-256 Digest</div>
-          <div class="modal-field-val" style="font-family: monospace; font-size: 0.8rem; word-break: break-all; color: #93c5fd;">${escapeHtml(ev.sha256)}</div>
-        </div>
         <div class="modal-full-field">
           <div class="modal-field-label">Screenshot Visual Artifact</div>
           <a href="${imgPath}" target="_blank" title="Click to open raw full-resolution image in new tab">
